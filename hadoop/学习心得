@@ -1,0 +1,1 @@
+1.直接用hadoop fs后面不更任何东西，会显示所有hadoop fs的命令
