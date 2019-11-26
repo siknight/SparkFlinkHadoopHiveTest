@@ -12,7 +12,7 @@ import java.net.URISyntaxException;
 public class HdfsTest {
 
     /**
-     * 第二种在hdfs上创建文件的方法
+     * 第一种在hdfs上创建文件的方法
      * hdfs创建文件方式01
      */
     @Test
