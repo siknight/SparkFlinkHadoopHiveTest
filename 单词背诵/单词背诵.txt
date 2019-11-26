@@ -1,6 +1,28 @@
-
 traversable	可遍历性; 可遍历的; 能越过的; 遍历的;
 implicit 含蓄的; 不直接言明的; 成为一部分的; 内含的; 完全的; 无疑问的;
-
 standalone    n.脱机;  adj.	单独的，独立的;
-
+deployment (部队、资源或装备的) 部署，调集;
+-------------
+detache  分离的
+reliable 可靠的
+scalable 可扩展的
+scale up 增大; 增加; 提高;
+detect 发现，查明
+release 公开，发布，释放   n版本
+minor 次要的，较小的，轻微的
+upon 在..之上
+metrics 衡量指标
+timeline 时间线
+mode 风格，样式
+----------------
+usage  用法
+generic 通用的，普通的
+appender 附加器
+effort 努力
+coordination 协作; 协调; 配合;
+stat 统计
+ephemeral 短暂的; 瞬息的;
+pseudo 假的，伪的，冒充的
+pseudo-distributed 伪分布式的
+prerequisite 先决条件
+prone  遭受

@@ -3,7 +3,6 @@ package flinkstream.wc.实时
 import org.apache.flink.streaming.api.scala.{DataStream, StreamExecutionEnvironment}
 
 object WorldCountStreamApp {
-
   /**
     * finkStram实时计算
     */
@@ -18,7 +17,7 @@ object WorldCountStreamApp {
     val source: DataStream[String] = environment.socketTextStream(hostname, port)
 
     //3.transform 转换
-    // flatMap和Map需要引用的隐式转换 keyBy(0) 0表示map的第一个参数 sum(1) 表示map的第二个参数
+    //flatMap和Map需要引用的隐式转换 keyBy(0) 0表示map的第一个参数 sum(1) 表示map的第二个参数
     import org.apache.flink.api.scala._
     val result: DataStream[(String, Int)] = source.flatMap(_.split(" ")).map((_, 1)).keyBy(0).sum(1)
 

@@ -11,6 +11,8 @@
     <modules>
         <module>spark</module>
         <module>Flink</module>
+        <module>hadoop</module>
+        <module>zookeeper</module>
     </modules>
 
 

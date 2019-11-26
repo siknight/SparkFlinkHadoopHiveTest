@@ -11,8 +11,12 @@ object wordCount {
     //创建SparkConf对象
     //设定Spark技术框架的（部署）环境
    val conf:SparkConf = new SparkConf().setMaster("local[*]").setAppName("sparkContext/wc")
-    val sc = new SparkContext(conf)
     //创建spark上下文对象
+    val sc = new SparkContext(conf)
+
+    //读取文件，将文件内容一行一行的读取出来
+    //路径查找位置默认从当前的部署环境中查找
+    //如果从本地查找：file:/// 如果从hdfs上查找hdfs://
     val lines: RDD[String] = sc.textFile("in")
     //将一行一行的数据分解为一个一个的单词
     val words: RDD[String] = lines.flatMap(_.split(" "))
