@@ -1,0 +1,8 @@
+#在脚本/etc/profile中定义的变量，在当前登陆的shell进程中source /etc/profile时，脚本中定义的变量也会进入当前登陆的进程
+
+#!/bin/bash
+echo "start zkServer..."
+for i in 102 103 104
+do
+ssh hadoop$i "source /etc/profile;/opt/module/zookeeper-3.4.10/bin/zkServer.sh start"
+done
