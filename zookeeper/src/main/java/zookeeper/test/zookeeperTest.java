@@ -44,7 +44,7 @@ public class zookeeperTest {
     @Test
     public void createZnodeTest() throws KeeperException, InterruptedException {
         zkClient.create(
-            "/fuxi/lisi01","lisi01hehe".getBytes(),
+            "/fuxi/lisi03","lisi01hehe".getBytes(),
                         ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
 
     }
@@ -99,6 +99,16 @@ public class zookeeperTest {
     public void updateZnodeTest() throws KeeperException, InterruptedException {
         Stat stat = zkClient.setData("/fuxi/lisi01", "xiaosi".getBytes(), -1);
         System.out.println("stat="+stat);
+    }
+
+    /**
+     * 删除某节点
+     * @throws KeeperException
+     * @throws InterruptedException
+     */
+    @Test
+    public void deleteZnodeTest() throws KeeperException, InterruptedException {
+       zkClient.delete("/fuxi/lisi02",-1);
     }
 
 }
