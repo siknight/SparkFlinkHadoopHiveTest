@@ -1,3 +1,8 @@
 1.hdfs是分布式存储框架     hadoop= hdfs + yarn + mapreduce + common
 2.mapreduce是分布式计算框架
+    （不擅长实时计算，不擅长流式计算，数据源必须是静态的）
+        Mapper阶段：
+            map()方法（MapTask进程）对每一个<k,v>调用一次
+        Reducer阶段：
+            reduceTask进程对每一组相同k的<k,v>组调用一次reduce()方法
 3.zookeeper是分布式服务管理框架 = 文件存储+通知机制
