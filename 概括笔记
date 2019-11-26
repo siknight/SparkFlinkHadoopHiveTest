@@ -1,0 +1,3 @@
+1.hdfs是分布式存储框架     hadoop= hdfs + yarn + mapreduce + common
+2.mapreduce是分布式计算框架
+3.zookeeper是分布式服务管理框架 = 文件存储+通知机制
