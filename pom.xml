@@ -13,6 +13,7 @@
         <module>Flink</module>
         <module>hadoop</module>
         <module>zookeeper</module>
+        <module>Scala</module>
     </modules>
 
 

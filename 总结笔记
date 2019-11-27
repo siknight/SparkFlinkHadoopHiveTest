@@ -1,6 +1,7 @@
 idea常用快捷键总结:
-
-hadoop总结:
+liunx软件安装：
+    mysql需要rpm，其他的直接解压
+hadoop总结:（不用配zookeeper，除了HA）
     1.hdfs是分布式存储框架
         （1）hadoop= hdfs + yarn + mapreduce + common
             命令hdfs dfs -命令（用hdfs dfs可以查看所有命令）
@@ -101,6 +102,31 @@ hive总结：
 
 hbase总结
 
+
+scala语言总结：
+    1.安装（安装方法和jdk很相似）
+        （1）安装scala语言之前必须先安装jdk，推荐jdk1.8
+         (2)安装步骤
+            （scala官网：https://www.scala-lang.org/）
+            一,配置SCALA_HOME= D:\scala-2.11.8
+            二，在PATH变量中添加：%SCALA_HOME%\bin
+            三，打开cmd命令，输入scala打开scala解释器
+            四，在idea工具上运行时需要在idea上安装插件
+    2.只有object修饰的类里才能放main方法。以下是案例：
+      object HelloScala {
+      //main方法
+        def main(args: Array[String]): Unit = {
+          println("Hello Scala") // 打印字符串
+        }
+      }
+    3.简介：scala是一门多范式编程怨言，其中的范式指编程方式，
+        不同的编程语言，编程方式也不同，也就意味着scala融合了
+        多种不同编程方式的语言。所以Scala编程的初衷是集成面向对象
+        和函数式编程的各种特性。Scala源代码(.scala)会被编译成
+        字节码（.class），然后运行于JVM上，并可以调用java的类库
+        实现两种语言的无缝对接。
+    4.
+
 spark总结：（不用配置zookeeper）
         1.spark有三种运行模式：local本地运行模式,standalone模式和完全分布式模式
                 (1)local模式(配置一台机器，直接解压就能用)
@@ -108,7 +134,8 @@ spark总结：（不用配置zookeeper）
                 (2)standalone模式(配置三台机器）
 
                 (3)完全分布式模式（配置一台机器，然后让yarn实现分布式）
-         2.
+         2.用spark-shell打开spark的shell客户端，默认是本地模式
+           spark-shell -master yarn 打开yarn模式
 
 flink总结：
 
