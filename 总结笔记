@@ -1,0 +1,114 @@
+idea常用快捷键总结:
+
+hadoop总结:
+    1.hdfs是分布式存储框架
+        （1）hadoop= hdfs + yarn + mapreduce + common
+            命令hdfs dfs -命令（用hdfs dfs可以查看所有命令）
+                  或者 hadoop fs -命令（用hadoop fs可以查看所有命令）
+        （2）连接到hdfs的url: hdfs://hadoop102:9000
+             连接到hdfs的web路径 http://hadoop102:50070
+             连接到yarn的web路径 http://hadoop102:8088
+         (3)代码操作案例：
+                 //1.首先连接到hdfs系统客户端
+                 FileSystem fs = FileSystem.get(
+                    new URI("hdfs://hadoop102:9000"), new Configuration(), "lisi");
+                  //2.然后用fs客户端操作
+                 fs.mkdirs(new Path("/lisi/lisi07"));
+                ----------------------------------
+            代码操作用法和hdfs程序很相似，概括就是先获取客户端，然后用获取的客户端操作
+          （4）
+                hdfs由NameNode，DataNode和Secondary NameNode组成
+                一，其中NameNode相当于是数据的目录，是存储数据的元数据
+                    如文件名，文件目录，文件属性，以及每个文件得块列表
+                    和快的DataNode等
+                二，DataNode存储真正的数据和块数据的校验和
+                三,Secondary NameNode 用来监控hdfs的辅助后台程序，每隔一段时间
+                    获取hdfs元数据的快照。
+
+
+    2.mapreduce是分布式计算框架
+        （1）
+            不擅长实时计算，不擅长流式计算，数据源必须是静态的
+        （2）
+            Mapper阶段：
+                map()方法（MapTask进程）对每一个<k,v>调用一次
+            Reducer阶段：
+                reduceTask进程对每一组相同k的<k,v>组调用一次reduce()方法
+        （3）
+            FileInputFormat切片机制：
+                每一个Split切片分配一个MapTask并行实时实例处理，也就是
+            有多少个split切片就有多少个MapTask。默认情况下切片大小=BlockSize。
+            其次切片时不考虑不考虑数据集集体，而是针对每一个文件单独切片。
+                比如：a.txt：200M  b.txt 10M
+                    a.txt分成：0-128M和128-200M两个分片 。 b.txt 会分成0-10M一个分片。
+                    所以共分成3个分片，也就是3个mapTask
+          (4)
+               提交jar方法 hadoop jar jar包路径  main类 输入路径 输出路径（要不存在，否则报错）
+                    注意：如果开启了hdfs，那输入路径和输出路径直接用/就表示是hdfs的路径
+                在idea里配置运行时，首先点击edit configuration，
+                然后在program parameter里配置输入路径和输出路径，参数之间用空格分开，
+                本地直接写相对路径和绝对路径就行，
+                如果是hdfs，就写：hdfs://hadoop102:9000/输入路径 hdfs://hadoop102:9000/输出路径
+     3.hadoop配置方式（看着word文档直接配，很简单）
+        （1）本地模式：直接解压就能用，配置一台机器
+        （2）伪分布式模式：配置一台机器,需要配置namenode主节点，yarn主节点，
+         (3)完全分布式：配置三台机器，需要配置namenode主节点，yarn主节点，
+            和在slave里配置上三台机器
+      4.yarn（hadoop2.0以后才有）
+         （1）2.0后yarn只负责资源的调度，MapReduce只负责运算。
+                1.0时代MapReduce同时负责资源调度和业务处理，耦合性较大
+          （2）yarn包括以下四部分：
+               一，ResourceManager：（资源的分配，相当于盖房子的大包头，监控用户，小包头和手下的监工和分活的）
+                    01.处理客户端请求
+                    02.监控NodeManager
+                    03.启动和监控ApplicationMaster
+                    04.负责资源的分配和调度
+                二，NodeManager（和单个节点资源管理有关，相当于公司各个小包头）
+                    01.管理单个节点上的资源
+                    02.处理来自ResourceManager上的命令
+                    03.处理来自ApplicationMaster上的命令
+                 三，ApplicationMaster（和任务运行有关，相当于大包头拍下来监工和分工的）
+                      01.负责数据的切分
+                      02.任务的监控和容错
+                      03.为应用程序请求资源并给内部处理
+                      03.任务的监控与容错
+                  四，Container（单个节点资源抽象，相当于一个每个小包头的工作资源，如人力，干活工具）
+                     （1）Container是yarn上资源的抽象
+                     （2）它封装了某个节点多维度资源，
+                            如内存，CPU,硬度，网络等。
+
+                    我认为整个流程可以简单理解为，客户端首先将job任务提交到ResourceManager，
+                  然后ResourceManager管理资源，和一些NodeManager单个节点资源管理者通信，
+                  问他们是否可以运行这个job，如果可以，ResourceManager就让applicationMaster给NodeManager分配
+                    任务，然后NodeManager拿到分配任务后，就利用手上的container资源干活。
+                    同时Container干活受到ApplicationMaster的监控。
+
+
+zookeeper总结：
+    1.zookeeper是分布式服务管理框架
+                 zookeeper = 文件存储+通知机制。
+    2.通过zkServer.sh start 进入服务器端，如果是完全分布式那么三个节点都要打开此命令
+
+    3.用zkCli.sh进入shell窗口，进入shell窗口后可以用help查看所有指令，然后很简单
+
+    4.
+        一.首先用ZooKeeper zkClient =new ZooKeeper(param1,param2,param3)获取客户端
+        二.用如zkClient.delete("/fuxi/lisi02",-1)这样的操作操作zookeeper
+           用法和hdfs程序很相似，概括就是先获取客户端，然后用获取的客户端操作
+
+
+hive总结：
+
+hbase总结
+
+spark总结：（不用配置zookeeper）
+        1.spark有三种运行模式：local本地运行模式,standalone模式和完全分布式模式
+                (1)local模式(配置一台机器，直接解压就能用)
+
+                (2)standalone模式(配置三台机器）
+
+                (3)完全分布式模式（配置一台机器，然后让yarn实现分布式）
+         2.
+
+flink总结：
+
