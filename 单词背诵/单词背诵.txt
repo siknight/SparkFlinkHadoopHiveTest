@@ -26,3 +26,9 @@ pseudo 假的，伪的，冒充的
 pseudo-distributed 伪分布式的
 prerequisite 先决条件
 prone  遭受
+------------------
+verbose 	冗长的; 啰唆的; 唠叨的;
+convention  协议,习俗; 常规; 惯例
+access   n.通道，机会  vt 到达，进入
+Counter 计数器，计算器，柜台
+track 小道，轨道，跟踪

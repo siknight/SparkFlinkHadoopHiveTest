@@ -1,8 +1,35 @@
-1.hdfs是分布式存储框架     hadoop= hdfs + yarn + mapreduce + common
-2.mapreduce是分布式计算框架
-    （不擅长实时计算，不擅长流式计算，数据源必须是静态的）
-        Mapper阶段：
-            map()方法（MapTask进程）对每一个<k,v>调用一次
-        Reducer阶段：
-            reduceTask进程对每一组相同k的<k,v>组调用一次reduce()方法
-3.zookeeper是分布式服务管理框架 = 文件存储+通知机制
+hadoop总结:
+    1.hdfs是分布式存储框架
+        （1）hadoop= hdfs + yarn + mapreduce + common
+            命令hdfs dfs -命令（用hdfs dfs可以查看所有命令）
+                  或者 hadoop fs -命令（用hadoop fs可以查看所有命令）
+        （2）连接到hdfs的url: hdfs://hadoop102:9000
+             连接到hdfs的web路径 http://hadoop102:50070
+             连接到yarn的web路径 http://hadoop102:8088
+
+    2.mapreduce是分布式计算框架
+        （1）
+            （不擅长实时计算，不擅长流式计算，数据源必须是静态的）
+        （2）
+            Mapper阶段：
+                map()方法（MapTask进程）对每一个<k,v>调用一次
+            Reducer阶段：
+                reduceTask进程对每一组相同k的<k,v>组调用一次reduce()方法
+        （3）
+            FileInputFormat切片机制：
+                每一个Split切片分配一个MapTask并行实时实例处理，也就是
+            有多少个split切片就有多少个MapTask。默认情况下切片大小=BlockSize。
+            其次切片时不考虑不考虑数据集集体，而是针对每一个文件单独切片。
+                比如：a.txt：200M  b.txt 10M
+                    a.txt分成：0-128M和128-200M两个分片 。 b.txt 会分成0-10M一个分片。
+                    所以共分成3个分片，也就是3个mapTask
+          (4)
+               提交jar方法 hadoop jar jar包路径  main类 输入路径 输出路径（要不存在，否则报错）
+                    注意：如果开启了hdfs，那输入路径和输出路径直接用/就表示是hdfs的路径
+                在idea里配置运行时，首先点击edit configuration，然后
+zookeeper总结
+    1.zookeeper是分布式服务管理框架
+                 zookeeper = 文件存储+通知机制。
+    2.通过zkServer.sh start 进入服务器端，如果是完全分布式那么三个节点都要打开此命令
+
+    3.用zkCli.sh进入shell窗口，进入shell窗口后可以用help查看所有指令，然后很简单
