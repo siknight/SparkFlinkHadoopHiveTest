@@ -1,4 +1,10 @@
 idea常用快捷键总结:
+    main方法：
+        scala：直接写main会提示main方法
+        java：写psvm会提示main方法
+     生成变量：
+        scala定义完对象后，加上.var 会生成变量名
+        java：使用ctrl + alt + v显示变量
 liunx软件安装：
     mysql需要rpm，其他的直接解压
 hadoop总结:（不用配zookeeper，除了HA）
@@ -63,12 +69,12 @@ hadoop总结:（不用配zookeeper，除了HA）
                     01.处理客户端请求
                     02.监控NodeManager
                     03.启动和监控ApplicationMaster
-                    04.负责资源的分配和调度
+                    04.负责资源的分配和调度（问datanode是否有空）
                 二，NodeManager（和单个节点资源管理有关，相当于公司各个小包头）
                     01.管理单个节点上的资源
                     02.处理来自ResourceManager上的命令
                     03.处理来自ApplicationMaster上的命令
-                 三，ApplicationMaster（和任务运行有关，相当于大包头拍下来监工和分工的）
+                 三，ApplicationMaster（和任务运行有关，相当于大包头拍下来监工和应用分工的（给datanode分配资源））
                       01.负责数据的切分
                       02.任务的监控和容错
                       03.为应用程序请求资源并给内部处理
@@ -105,7 +111,7 @@ hbase总结
 
 scala语言总结：
     1.安装（安装方法和jdk很相似）
-        （1）安装scala语言之前必须先安装jdk，推荐jdk1.8
+        （1）安装scala语言之前必须先安装jdk，推荐jdk1.8，scala在java虚拟机上运行
          (2)安装步骤
             （scala官网：https://www.scala-lang.org/）
             一,配置SCALA_HOME= D:\scala-2.11.8
@@ -113,14 +119,27 @@ scala语言总结：
             三，打开cmd命令，输入scala打开scala解释器
             四，在idea工具上运行时需要在idea上安装插件
     2.只有object修饰的类里才能放main方法。以下是案例：
-      object HelloScala {
-      //main方法
-        def main(args: Array[String]): Unit = {
-          println("Hello Scala") // 打印字符串
-        }
-      }
+        java：
+           public class HelloJava {
+               public static void main(String[] args) {
+
+               }
+           }
+
+       scala：
+
+           object MainTest {
+
+             def main(args: Array[String]) {
+               //后面的;可以省略
+               println("first scala main method");
+             }
+
+           }
+
     3.简介：
-        （1）scala是一门多范式编程怨言，其中的范式指编程方式，
+        （1）scala是一门多范式编程语言，其中的范式指编程方式
+            （比如scala融合了函数式编程和面向对象编程），
             不同的编程语言，编程方式也不同，也就意味着scala融合了
              多种不同编程方式的语言。所以Scala编程的初衷是集成面向对象
             和函数式编程的各种特性
@@ -138,7 +157,7 @@ scala语言总结：
                 用：和空格区别代码块。
                 二，scala和python都用def修饰方法。
                 三，scala和js都用var修饰变量，区别scala还可以用
-                     val表示常亮。python没有修饰变量的，直接写 a =10就行
+                     val表示不变量。python没有修饰变量的，直接写 a =10就行
                  四，scala，python和java是强类型语言，有返回值，js无返回值。
                        scala：
                             def  f1(): Unit ={
@@ -186,13 +205,13 @@ scala语言总结：
                         其中[]表示可要可不要
                         var关键字表示声明的值可以改变，
                         而val关键字声明的变量表示值无法改变
-                    二，scala中所有的类型都是首字母大写的
+                    二，scala中所有的类型都是首字母大写的，后面可以跟任何符号
                     三，一行逻辑代码的最后，无需使用“；”但是一行中
                         如果存在多个逻辑代码，必须使用“；”分开。
                     四，在函数式编程中，函数与其他数据类型一样，处于平
                       等地位，可以赋值给其他变量，也可以作为参数，传入另一个函数
                       或者作为别的函数的返回值。（记住和变量使用方法一样就行）
-                (7)面向对象（可以参考java）
+       5.面向对象（可以参考java）
                      一，类对比
                         java：
                            *格式
@@ -203,7 +222,7 @@ scala语言总结：
                              但是公共类只能有一个，且必须和源码文件的文件名保持一致。
                         Scala：
                             *格式
-                                 [修饰符] class 类名 {
+                                 [修饰符] class|object 类名 {
                                     类体
                                  }
                              *scala语法中，类并不声明为public，
@@ -240,8 +259,8 @@ scala语言总结：
                          四 普通方法对比
                                 java
                                     *public 返回值类型 方法名(参数列表) { 方法体 }
-                                    *调用方法 对象.方法名()
-                                scala
+                                                                         *调用方法 对象.方法名()
+                                                                     scala
                                     *def 方法名(参数列表) [：返回值类型] = {方法体}
                                     *Scala中的方法其实就是函数，只不过一般将对象中的函数称之为方法
                                     *调用方法  对象.方法名()
@@ -261,7 +280,244 @@ scala语言总结：
                                        *从语法角度来讲，所谓的伴生对象其实就是类的静态方法和成员的集合
                                        * 从技术角度来讲，所谓的伴生对象在编译时，
                                        会将对应的代码以静态的方式生成到类的字节码中。
-                      （8）包
+                              六，包
+                                    java：
+                                        这个我们都知道
+                                     scala：
+                                        *scala语言也可以使用包管理类
+                                        *scala 包名和源码实际的存储位置没有关系
+                                        *从技术角度来讲，Scala的编译器会将Scala中的包编译成符合Java语法规则的包结构
+                              七，继承
+                                    java:
+                                        class 子类名 extends 父类名 { 类体 }
+                                        子类继承父类的属性和方法
+                                     scala
+                                         class 子类名 extends 父类名 { 类体 }
+                                         子类继承父类的属性和方法
+
+                               八，接口
+                                    java:
+                                        声明接口
+                                        interface 接口名
+                                        实现接口
+                                       在Java中，接口并不属于类的体系关系，所以可以多实现，且接口支持多继承
+                                        接口中属性都是常量
+                                        接口中的方法都是抽象的
+                                     scala:
+                                        *Scala语言中，采用特质（特征）来代替接口的概念，也就是说，
+                                            多个类具有相同的特征（特征）时，
+                                            就可以将这个特质（特征）独立出来，采用关键字trait声明
+                                         *声明特质 trait 特质名
+                                         *一个类具有某种特质（特征），就意味着这个类满足了这个特质（特征）的所有要素，所以在使用时，
+                                         也采用了extends关键字，如果有多个特质或存在父类，
+                                         那么需要采用with关键字连接
+                                         * class类名 extends 特质1名称 with 特质2名称 with 特质3名称
+                    6，标识符：
+                          scala首字符为操作符，后续字符为任意操作符
+
+                    7，val定义的值是不可变的，它不是一个常量，
+                        是不可变量，或称之为只读变量。
+                    8.类型
+                        *Scala语言是完全面向对象的语言，
+                            所以并不区分基本类型和引用类型，
+                            这些类型都是对象，我们称之为常用类型。
+                        *Scala常用类型中包含有7种数值类型：
+                        Byte、Char、Short、Int、Long、Float、Double
+                        *因为这些类型都是对象，所以他们都可以调用方法
+                         如 1.toString
+
+                    9.
+                        （1）Scala中，所有的值都是类对象，而所有的类，包括值类型
+                    ，都最终继承自一个统一的根类型Any。统一类型，是Scala的
+                    又一大特点。
+                        （2）Scala中还定义了几个底层类（Bottom Class），
+                            比如Null和Nothing
+                                *Null是所有引用类型的子类型，而Nothing是所有类型的
+                                子类型。Null类只有一个实例对象，null，类似于java中
+                                的null引用。null可以赋值给任意引用类型，但是不能赋值
+                                给值类型。
+                                *Nothing，可以作为没有正常返回值的方法的返回类型，
+                                非常直观的告诉你这个方法不会正常返回。而且由于Nothing是
+                                其他任意类型的自雷，他还能跟要求返回值的方法兼容。
+                 10.Scala中没有++、--操作符，需要通过+=、-=来实现同样的效果。
+
+                 11.Scala认为任何表达式都会有值，对于空值，使用Unit类，叫做无用占位符
+
+                 12.Scala中没有三元运算符
+
+                 13与If语句不同，While语句本身没有值，即整个While语句的结果是Unit类型的()。
+
+                 14因为while和do…while中没有返回值,所以外部定义while的变量不推荐使用
+
+                 15Scala内置控制结构特地去掉了break和continue，是为了更好的适应函数化编程，
+                   推荐使用函数式的风格解决break和contine的功能，而不是一个关键字。
+                     示例代码如下：
+                    import util.control.Breaks._
+                    breakable{  //带breakable只会带包含的代码，如果不带遇到break（）后会中断后面所有的代码
+                      while(n <= 20){
+                        n += 1;
+                        if(n == 18){
+                          break()
+                        }
+                      }
+                    }
+
+
+                    用下面这个就行；
+                        object BreakTest {
+
+                          def main(args: Array[String]): Unit = {
+                            var i =1;
+                            while (i<=10){
+                              if (i==5){
+                                Breaks.break();
+                              }else{
+                                println(i)
+                                i=i+1;
+                              }
+                            }
+                          }
+
+                        }
+
+                      16 for方法很不同，这里的for循环又被称为for表达式和for推导式
+                            （1）to左右两边为前闭后闭的访问
+                                        for(i <- 1 to 3){
+                                          print(i + " ")
+                                        }
+                             （2）until左右两边为前闭后开的访问
+                                    for(i <- 1 until 3) {
+                                      print(i + " ")
+                                    }
+                             （3）循环守卫
+                                    for(i <- 1 to 3 if i != 2) {
+                                      print(i + " ")
+                                     }
+
+                             （4）引入变量
+                                for(i <- 1 to 3; j = 4 - i) {
+                                    print(j + " ")
+                                  }
+                              （5）嵌套循环：
+                                    for(i <- 1 to 3; j <- 1 to 3) {
+                                      print(i*j + " ")
+                                    }
+                               （6）循环返回值：
+                                    （将遍历过程中处理的结果返回到一个新集合中，
+                                            使用yield关键字）
+                                val for5 = for(i <- 1 to 10) yield i
+                                （7）使用花括号{}代替小括号()：
+                                    for{
+                                      i <- 1 to 3
+                                      j = 4 - i
+                                    }
+                                     注：{}和()对于for表达式来说都可以。
+                                     for 推导式有一个不成文的约定：
+                                     当for 推导式仅包含单一表达式时使用原括号
+                                     ，当其包含多个表达式时使用大括号。
+                                     值得注意的是，使用原括号时，
+                                     早前版本的Scala 要求表达式之间必须使用分号。
+                     (8)函数
+                        一，格式
+                         def 函数名(参数名1: 参数类型1, 参数名2: 参数类型2) : 返回类型 = {
+                            函数体
+                         }
+                        二，注：如果函数明确声明无返回值（声明Unit）
+                          ，那么函数体中即使使用return关键字也不会有返回值。
+                          如果明确函数无返回值或不确定返回值类型，那么返回值类型可以省略
+                         三，：函数如果参数列表不为空，
+                             那么在调用时需要传递参数，不能省略，
+                             这和JavaScript语法不一样，在JavaScript中调用有参函数时，
+                             如果没有传递参数，那么参数会自动赋值为undefined,
+                              Scala也可以实现类似的功能，就是在声明参数时，直接赋初始值。
+                                  def f5(p:String = "f5") {
+                                      println(p);
+                                  }
+                          四，如果函数存在多个参数，每一个参数都可以设定默认值
+                          ，那么这个时候，传递的参数到底是覆盖默认值，
+                          还是赋值给没有默认值的参数，就不确定了(默认按照声明顺序)。
+                          在这种情况下，可以采用带名参数
+                                def f6 ( p1 : String = "v1", p2 : String ) {
+                                    println(p1 + p2);
+                                }
+                                f6("v2" )  // (X)
+                                f6(p2="v2") // (OK)
+
+                          五， 变长参数（不确定个数参数，类似Java的...）
+                            def f7(args: Int*) = {
+                              var result = 0
+                              for(arg <- args)
+                                result += arg
+                              result
+                            }
+                          六，递归函数（重点）
+                                // 递归函数未执行之前是无法推断出来结果类型，在使用时必须有明确的返回值类型
+                                def f8(n: Int): Int = {
+                                  if(n <= 0)
+                                    1
+                                  else
+                                    n * f8(n - 1)
+                                }
+                            七， 过程：
+                                    将函数的返回类型为Unit的函数称之为过程。
+                                    如果明确函数没有返回值，那么等号可以省略
+                                     def f9(content: String) = {
+                                       println(“f7”)
+                                     }
+                                     def f9(content: String) { // 明确无返回值
+                                       println(content)
+                                     }
+
+                                注：开发工具的自动代码补全功能，虽然会自动加上Unit，
+                                但是考虑到Scala语言的简单，灵活，能不加最好不加
+
+               八，惰性函数：当函数返回值被声明为lazy时，
+                       函数的执行将被推迟，直到我们首次对此取值。这种函数我们称之为惰性函数
+                       ，在Java的某些框架代码中称之为懒加载（延迟加载）
+                          def f10(): String = {
+                            println("f10方法执行")
+                          }
+                          lazy val msg = f10()
+                          println("f10方法没有执行")
+                          println(msg)
+                九，异常
+                       object ExceptionTest {
+
+                         def main(args: Array[String]): Unit = {
+                           try{
+                               var a =10/0;
+                           }catch {
+                             case ex:ArithmeticException =>{
+                               print("发生了算术异常")
+                             }
+                             case ex:Exception =>print("发生了异常");
+                           }
+                         }
+
+                       }
+               十，
+                 scala中的classOf[NumberFormatException] 相当于 java中的NumberFormatException.class
+
+               十一，
+                        标识符，首字母为运算符（+-*/）,后面字少在跟一个
+                        比如 val ++ =123
+                十二，如果函数体中只有一行代码，大括号可以省略（重点）
+                  如：def test() = "aaaa";
+                     //如果定义方法时带了（）且是无参的，那么调用时（）可以省略
+                      def test = "aaa";
+                       //如果定义方法时小括号（）省略，则调用时不能带（），直接test就行
+
+                 十三，scala里的变量和方法的类型都可以省略不写，其中方法如果明确告诉此方法没有
+                 返回值类型，也就是方法返回值是Unit类型的，那么={}的=可以省略不写。（重点）
+
+                 十四，匿名函数
+                   （）.{println("xxxxx")}
+
+                  十五。
+                    输出时$符可以直接在输出时拼接
+                        def bb(a:Int,b:Int) ={
+                           println(s"${a}*****${b}");
+                         }
 
 
 

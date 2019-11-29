@@ -32,3 +32,4 @@ convention  协议,习俗; 常规; 惯例
 access   n.通道，机会  vt 到达，进入
 Counter 计数器，计算器，柜台
 track 小道，轨道，跟踪
+reassignment 再分配,重分配;
