@@ -19,5 +19,6 @@ public class ScalaToJavaTest {
         System.out.println("-----");
        new SayHi().sayHi();
 
+
     }
 }

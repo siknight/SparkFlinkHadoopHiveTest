@@ -7,6 +7,7 @@ idea常用快捷键总结:
         java：使用ctrl + alt + v显示变量
 liunx软件安装：
     mysql需要rpm，其他的直接解压
+    alt+p打开linux的sftp，可以传文件
 hadoop总结:（不用配zookeeper，除了HA）
     1.hdfs是分布式存储框架
         （1）hadoop= hdfs + yarn + mapreduce + common
@@ -513,19 +514,198 @@ scala语言总结：
                  十四，匿名函数
                    （）.{println("xxxxx")}
 
-                  十五。
+                  十五.
                     输出时$符可以直接在输出时拼接
                         def bb(a:Int,b:Int) ={
                            println(s"${a}*****${b}");
                          }
 
+                   十六.
+                       *如果主构造器无参数，小括号可省略
+                            例如
+                             class ConstructorClass2() {
+                               var a="hello";
+                             }
+                             val clazz = new ConstructorClass
+                        *辅助构造器4)名称为this，
+                            多个辅助构造器通过不同参数列表进行区分
+                         *在类的属性上加@BeanProperty会自动生成get和set方法，但是如果
+                         不是抽象类，属性必选要给一个初始值
+                             @BeanProperty
+                             var name:String ="hehe"
+                             @BeanProperty
+                             var age:Int =22
+                        *如果想让主构造器变成私有的，
+                            可以在()之前加上private，这样用户只能通过辅助构造器来构造对象了
+
+                        *类对象，伴生类，伴生对象
+                                注：类和它的伴生对象可以相互访问私有属性或方法，
+                                他们必须存在同一个源文件中。必须同名。
+                                // person.scala
+                                object Person{ // 类对象
+                                }
+                                // person.scala
+                                class Person { // 伴生类
+                                }
+                                object Person { // 伴生对象
+                                }
+                                从技术的角度来讲，伴生对象和伴生类其实是两个不同的类，
+                                伴生对象所对应的类可以简答的理解为伴生类的辅助工具类。
+                                而伴生对象就是这个辅助工具类的单例对象，专门用于处理伴生类中静态资源的相关功能.
+                                专门用于处理伴生类中静态资源的相关功能.
+                                伴生对象既然是一个单例对象，就意味着类已经声明过了，
+                                所以，伴生（类）对象是不能声明构造器的。
+                                伴生对象既然是一个单例对象，就意味着类已经声明过了，所以，伴生（类）对象是不能声明构造器的
+                 十七.辅助构造器名称为this（这个和Java是不一样的），
+                        多个辅助构造器通过不同参数列表进行区分
+                        class Person() {
+                            private var sname = ""
+                            private var iage = 0
+                            // 辅助构造器无论是直接或间接，最终都一定要调用主构造器，执行主构造器的逻辑
+                            def this( name : String ) {
+                                this() // 放在第一行
+                                sname = name
+                            }
+                            def this( name : String, age : Int ) {
+                                this(name) //调用之前已经声明过该构造器
+                                iage = age
+                            }
+                        }
+               十八.如果想让主构造器变成私有的，可以在()之前加上private，
+                   这样用户只能通过辅助构造器来构造对象了
+                   class ConstructorClass private () {
+                   }
+                   val obj = new ConstructorClass() // (X)
+
+               十九.apply方法
+                    因为伴生对象可以处理静态资源，
+                    所以完全可以通过伴生对象提供的方法对伴生类进行处理
+                    object Person {
+                        def apply() =  { // 在伴生对象中实现apply方法。
+                            return new Person() // 这里也可以采用单例模式实现
+                        }
+                    }
+                    …
+                    val p = Person() // 此处不需要使用new关键字，
+                    而是直接增加小括号，在执行时，
+                    会自动调用伴生对象中的apply方法。返回伴生类实例对象
+                二十.应用程序对象
+                    每一个Scala应用程序都需要从一个对象的main方法开始执行，
+                     这个方法的类型为Array[String]=>Unit：
+                     object ScalaApp{
+                       def main(args: Array[String]) {
+                         println("Hello, Scala!")
+                       }
+                     }
+                     或者扩展一个App特质：
+                     object ScalaApp extends App {
+                       println("Hello, Scala!")
+                     }
+
+                二十一.枚举对象
+                    Scala中没有枚举类型，定义一个扩展Enumeration类的对象，
+                    并以Value调用初始化枚举中的所有可能值,模拟枚举类型。
+                    object LightColorEnum extends Enumeration {
+                      val Red = Value(0, "Stop")
+                      val Yellow = Value(1, "Slow")
+                      val Green = Value(2, "Go")
+                    }
+                二十二.构造器参数
+                    *Scala类的主构造器函数是可以添加参数的。
+                    如果参数未用任何修饰符修饰，那么这个参数是局部变量
+                        var p = new Person("lisi")
+                        println(p.name) (X)
+                    *如果参数使用val关键字声明，
+                    那么Scala会将参数作为类的只读属性（不能修改）使用
+                            class Person( val name : String ) {
+                            }
+                            var p = new Person("lisi")
+                            println(p.name) (OK) // 这里调用对象的name属性，
+                                其实并不是属性，而是方法，因为方法无参数，
+                                所以省略了小括号，感觉和调用属性一样，
+                                这体现了Scala语言访问一致性
+                    *如果参数使用var关键字声明，
+                        那么那么Scala会将参数作为类的成员属性使用,
+                        并会提供属性对应的setter/getter方法
+                            class Person( var name : String ) {
+                            }
+                            var p = new Person("lisi")
+                            p.name = "wangwu" // setter
+                            println(p.name)  //getter
+           二十三.在scala中，访问权限分为：
+                 public, private,protected, 缺省的
+               *var name = "zhangsan" // 此时属性为public访问权限
+                        ,任何地方都能访问
+               *private var name = "zhangsan"  // 此时属性为私有的，
+                                只在类的内部和伴生对象中可用
+                *protected var name = "zhangsan"  // scala中受保护权限比Java中更严格，
+                                    只能子类访问，同包无法访问
+                 *4)包访问权限
+                 private [scala] val pname="zhangsan" // 增加包访问权限后，
+                        private同时起作用
+                   当然，也可以将可见度延展到上层包：
+
+                   private[atguigu] val description="zhangsan"
+            二十四.因为Scala语言源自于Java，
+            所以java.lang包中的类会自动引入到当前环境中，
+            而Scala中的scala包和Predef包的类也会自动引入到当前环境中。
+            如果想要把其他包中的类引入到当前环境中，需要使用import语言
+
+            二十五.
+                *Scala中采用下划线作为通配符
+                 import scala.beans._ // 这里采用下划线作为通配符
+                 *如果不想要某个包中全部的类，而是其中的几个类，可以采用选取器（大括号）
+                    import scala.collection.mutable.{HashMap, HashSet}
+                  *如果引入的多个包中含有相同的类，那么可以将不需要的类进行重命名进行区分
+            二十六
+            .注：位于文件顶部不带花括号的包声明在
+                 对当前整个文件内的包声明有效。
+            二十七.
+                *当访问权限缺省时，scala默认为public访问权限
+                  class Person {
+                      var name = "zhangsan" // 此时属性为public访问权限,任何地方都能访问
+                  }
+                *私有权限
+                    class Person {
+                        private var name = "zhangsan"
+                        // 此时属性为私有的，只在类的内部和伴生对象中可用
+                    }
+                *受保护权限
+                    class Person {
+                         protected var name = "zhangsan"
+                         // scala中受保护权限比Java中更严格，只能子类访问，同包无法访问
+                     }
+                 *包访问权限
+                    package com.atguigu.scala
+                    class Person {
+                      private[scala] val pname="zhangsan" // 增加包访问权限后，private同时起作用
+                    }
+                    当然，也可以将可见度延展到上层包
+                    private[atguigu] val description="zhangsan"
+
+         二十八.继承
+              *重写方法
+                重写一个非抽象方法需要用override修饰符，
+                  调用超类的方法使用super关键字
+              *类型检查和转换
+                 1)  classOf[String]就如同Java的 String.class
+                 2)  obj.isInstanceOf[T]就如同Java的obj instanceof T
+                 3)  obj.asInstanceOf[T]就如同Java的(T)obj（强制转换)
+                 
 
 
 
 
 
 
-spark总结：（不用配置zookeeper）
+
+
+
+
+
+
+
+spark总结：（不用eper）
         1.spark有三种运行模式：local本地运行模式,standalone模式和完全分布式模式
                 (1)local模式(配置一台机器，直接解压就能用)
 

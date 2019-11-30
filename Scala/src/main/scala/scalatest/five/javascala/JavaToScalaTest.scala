@@ -35,6 +35,9 @@ object  ScalaHeHe{
     print(aa)
     println("--")
     bb(1,2)
+    println("--test")
+    val test: JavaToScalaTest.type = JavaToScalaTest;
+    test.aa()
 
   }
 }
