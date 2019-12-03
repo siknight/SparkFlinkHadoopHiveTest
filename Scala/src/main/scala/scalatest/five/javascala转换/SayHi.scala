@@ -1,4 +1,4 @@
-package scalatest.five.javascala
+package scalatest.five.javascala转换
 
 class SayHi {
 

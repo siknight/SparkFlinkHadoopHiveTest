@@ -1,4 +1,4 @@
-package scalatest.third.programing
+package scalatest.third.面向对象
 
 
 //没有修饰符

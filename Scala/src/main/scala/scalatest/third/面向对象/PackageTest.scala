@@ -1,5 +1,5 @@
 package scalatest.third
-package programing{
+package 面向对象{
   object PackageTest {
     def main(args: Array[String]): Unit = {
       println("nihao")
@@ -7,7 +7,7 @@ package programing{
   }
 }
 
-package object programing{
+package object 面向对象{
   def main(args: Array[String]): Unit = {
     println("wode")
   }

@@ -1,4 +1,4 @@
-package scalatest.third.programing
+package scalatest.third.面向对象
 //单例模式练习
 class SingleMode {
   def aa(): Unit ={

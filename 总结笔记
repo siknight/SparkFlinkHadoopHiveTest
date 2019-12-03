@@ -1,4 +1,5 @@
 idea常用快捷键总结:
+    ctrl+p提示参数快捷键
     main方法：
         scala：直接写main会提示main方法
         java：写psvm会提示main方法
@@ -691,7 +692,169 @@ scala语言总结：
                  1)  classOf[String]就如同Java的 String.class
                  2)  obj.isInstanceOf[T]就如同Java的obj instanceof T
                  3)  obj.asInstanceOf[T]就如同Java的(T)obj（强制转换)
-                 
+         二十九.抽象类和匿名内部类
+            abstract  class Person2 { // 抽象类
+              var name:String;  //  抽象字段,属性未初始化时，就是抽象的
+                                //用抽象字段时，class前面必须带 abstract
+              def hello; //抽象方法
+
+            }
+
+            class Emp2 extends Person2{
+               var name: String = _ //注：子类重写抽象方法不需要override
+              //注：子类重写抽象方法不需要override
+               def hello: Unit = ???
+            }
+
+              //匿名内部类
+                val person: Person2 = new Person2 {
+                  override var name: String = _
+
+                  override def hello: Unit = ???
+                }
+
+           三十.特质
+               *
+                trait Logger{
+                  def log(msg:String);
+                }
+
+                class Console extends Logger with Cloneable with Serializable{
+                  override def log(msg: String): Unit = ???
+                }
+            *和Java中的接口不太一样的是特质中的方法
+                并不一定是抽象的，也可以有默认实现
+                     trait Logger{
+                       def log(msg:String): Unit ={
+                         println("你好")
+                       }
+                     }
+
+                     class Console extends Logger with Cloneable with Serializable{
+                        //当trait里有具体实现时，
+                         //这个方法不用被子类继承
+
+                     }
+            *动态混入
+               trait DBOperate {
+               def insert( id : Int ) {
+                   println("插入主键【"+id+ "】数据" )
+               }
+               }
+               class MySQL {
+               }
+               var db = new MySQL with DBOperate
+               db.insert(1)
+
+        三十一.隐式转换和隐式参数
+            *隐式转换函数是以implicit关键字声明的带有单个参数的函数。
+             这种函数将会自动应用，将值从一种类型转换为另一种类型。
+             *需要保证在当前环境下，只有一个隐式函数能被识别
+                 def main(args: Array[String]): Unit = {
+
+                     //声明隐式函数
+                    implicit  def toInt(d:Double)=d.toInt;
+
+                    var i:Int = 3.5;
+                    println(i)
+                  }
+             *隐式类注意点
+                1)其所带的构造参数有且只能有一个
+                2)隐式类必须被定义在“类”或“伴生对象”或“包对象”里
+                3)隐式类不能是case class（case class在后续介绍）
+                4)作用域内不能有与之相同名称的标示符
+                    object StringUtils {
+                    //隐式类,必须有有一个参数的主构造函数
+                      implicit class StringImprovement(val s : String){ //隐式类
+                        def addSuffix = s + " Scala"
+                      }
+                    }
+                    println("Hello". addSuffix)
+             *利用隐式转换丰富类库功能
+                    如果需要为一个类增加一个方法，
+                    可以通过隐式转换来实现。
+                    比如想为MySQL增加一个delete方法
+   16.数据结构
+          一.Scala同时支持可变集合和不可变集合，不可变集合从不可变，可以安全的并发访问。
+            两个主要的包：
+            不可变集合：scala.collection.immutable
+            可变集合：  scala.collection.mutable
+            Scala默认采用不可变集合，对于几乎所有的集合类，Scala都同时提供了可变和不可变的版本。
+    17.
+        *map：将集合中的每一个元素通过指定功能（函数）映射（转换）成新的结果集合
+        * flatmap：flat即压扁，压平，扁平化，效果就是将集合中的
+           每个元素的子元素映射到某个函数并返回新的集合
+        *filter：将符合要求的数据(筛选)放置到新的集合中
+        * 迭代器
+           val iterator = List(1, 2, 3, 4, 5).iterator
+           while (iterator.hasNext) {
+             println(iterator.next())
+           }
+           或：
+           for(enum <- iterator) {
+             println(enum)
+           }
+       18高阶函数
+            *作为参数的函数
+                函数作为一个变量传入到了另一个函数中，
+                那么该作为参数的函数的类型是：function1，
+                    即：（参数类型） => 返回类型
+            *匿名函数
+                即没有名字的函数，
+                可以通过函数表达式来设置匿名函数
+                val triple = (x: Double) => 3 * x
+                println(triple(3))
+             *能够接受函数作为参数的函数，叫做高阶函数
+
+                代码详见scalatest.sec.方法.MethodTest2（很重要）
+
+        19类的初始化
+             //_ 表示初始化
+                  override var name: String = _
+                  var age: Int = _
+
+         20.注意
+             class User {
+               //申明属性，，scala给类声明属性，默认是私有的，但是底层
+               //提供了公开的setter和getter方法
+               var name:String = _
+               //如果给属性增加private修饰符，name底层的setter和getter方法都是私有的
+              private var age:Int = _
+               //如果声明的属性使用val，那么属性是私有的，并且使用final修饰，底层只提供getter，而没有setter方法
+               val  address:String = _
+
+
+             }
+          21.不可变集合和数组，增删查改都会创建新的集合。
+            可变集合和数组，增删查改不会创建新的集合
+
+            集合和数组都有一个aplly伴生对象，都可以直接 new List(1,2,3);
+
+             队列一定是可变集合
+             所以默认情况下只有队列是可变集合，其他都是不可变集合
+             元组可以当做map集合中的键值对来使用
+
+          22.在函数参数里不能直接省略为（_）,因为_含义太多，很难推断，默认当做function处理，不当做参数处理
+
+
+          23.控制抽象
+             //控制抽象，函数参数没有输入值，也没有返回值
+              def test(f: =>Unit) ={
+                f
+              }
+
+              test{
+                print("hehe")
+              }
+
+
+              24模式匹配
+                 val  (aa,bb,cc)=("11","22","33")
+                 print(aa)
+
+
+
+
 
 
 

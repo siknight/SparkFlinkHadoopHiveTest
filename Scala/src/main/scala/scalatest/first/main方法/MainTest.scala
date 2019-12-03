@@ -1,4 +1,4 @@
-package scalatest.first.mainMethod
+package scalatest.first.main方法
 
 /**
   * scala第一个程序，用于测试scala main方法
