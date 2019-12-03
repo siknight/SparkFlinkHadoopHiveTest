@@ -13,7 +13,7 @@ object WorldCount {
     val environment: ExecutionEnvironment = ExecutionEnvironment.getExecutionEnvironment
 
     // 2.source，创建数据来源
-    val source: DataSet[String] = environment.readTextFile("in")
+    val source: DataSet[String] = environment.readTextFile("in/word1")
 
     //3.transform 转换
     // 其中flatMap 和Map 中  需要引入隐式转换

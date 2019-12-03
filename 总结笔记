@@ -852,6 +852,7 @@ scala语言总结：
                  val  (aa,bb,cc)=("11","22","33")
                  print(aa)
 
+              25.scala所有的集合和数组输出都可以用 对象名.mkString(",")输出
 
 
 
@@ -868,15 +869,192 @@ scala语言总结：
 
 
 
-spark总结：（不用eper）
+
+spark总结：（不用zookeeper）
+        概括：一种基于内存的快速，通用，可扩展的大数据分析引擎。
+            由scala编写
         1.spark有三种运行模式：local本地运行模式,standalone模式和完全分布式模式
                 (1)local模式(配置一台机器，直接解压就能用)
 
-                (2)standalone模式(配置三台机器）
+                (2)standalone模式(配置三台机器，Master+Slave构成的Spark集群，Spark运行在集群中。）
 
                 (3)完全分布式模式（配置一台机器，然后让yarn实现分布式）
          2.用spark-shell打开spark的shell客户端，默认是本地模式
            spark-shell -master yarn 打开yarn模式
 
+         3.spark有两个重要角色，Driver和Executor
+            Driver（驱动器）作用：
+                driver是main方法的进程。。它负责开发人员编写的用来创建SparkContext、创建RDD，
+                以及进行RDD的转化操作和行动操作代码的执行。
+               如果你是用spark shell，那么当你启动Spark shell的时候，系统后台自启了一个Spark驱动器程序，就是在Spark shell中预加载的一个叫作 sc的SparkContext对象。如果驱动器程序终止，那么Spark应用也就结束了。主要负责：
+                1）把用户程序转为作业（JOB）
+                2）跟踪Executor的运行状况
+                3）为执行器节点调度任务
+                4）UI展示应用运行状况
+             Executor（执行器作用）：Spark Executor是一个工作进程，负责在 Spark 作业中运行任务，任务间相互独立。
+                            Spark 应用启动时，Executor节点被同时启动，并且始终伴随着整个 Spark 应用的生命周期而存在。
+                            如果有Executor节点发生了故障或崩溃，Spark 应用也可以继续执行，
+                            会将出错节点上的任务调度到其他Executor节点上继续运行。主要负责：
+                                      1）负责运行组成 Spark 应用的任务，并将结果返回给驱动器进程；
+                                      2）通过自身的块管理器（Block Manager）为用户程序中要求缓存的RDD提供内存式存储。
+                                        RDD是直接缓存在Executor进程内的， 因此任务可以在运行时充分利用缓存数据加速运算。
+        4.Spark内置模块
+               *Spark Core：实现了Spark的基本功能，包含任务调度、内存管理、
+                            错误恢复、与存储系统交互等模块。
+                            Spark Core中还包含了对弹性分布式数据集
+                            (Resilient Distributed DataSet，简称RDD)的API定义。
+               *Spark SQL：Spark用来操作结构化数据的程序包。通过Spark SQL，我们可以使用 SQL或者Apache Hive版本的SQL方言(HQL)来查询数据。
+                      Spark SQL支持多种数据源，比如Hive表、Parquet以及JSON等。
+                *Spark Streaming：是Spark提供的对实时数据进行流式计算的组件。
+                    提供了用来操作数据流的API，并且与Spark Core中的 RDD API高度对应。
+                *Spark MLlib：提供常见的机器学习(ML)功能的程序库。
+                   包括分类、回归、聚类、协同过滤等，还提供了模型评估、数据 导入等额外的支持功能。
+                *集群管理器：Spark 设计为可以高效地在一个计算节点到数千个计算节点之间伸缩计 算。为了实现这样的要求，同时获得最大灵活性，Spark支持在各种集群管理器(Cluster Manager)上运行，
+                    包括Hadoop YARN、Apache Mesos，以及Spark自带的一个简易调度 器，叫作独立调度器。
+
+         5.spark rdd导入spark core包就行
+            <dependencies>
+                <dependency>
+                    <groupId>org.apache.spark</groupId>
+                    <artifactId>spark-core_2.11</artifactId>
+                    <version>2.1.1</version>
+                </dependency>
+            </dependencies>
+          6.spark rdd代码步骤
+            //1.创建SparkConf并设置App名称
+                val conf = new SparkConf().setAppName("WC")
+
+            //2.创建SparkContext，该对象是提交Spark App的入口
+                val sc = new SparkContext(conf)
+
+                //3.使用sc创建RDD并执行相应的transformation和action
+                sc.textFile(args(0)).flatMap(_.split(" ")).map((_, 1)).reduceByKey(_+_, 1).sortBy(_._2, false).saveAsTextFile(args(1))
+
+            //4.关闭连接
+                sc.stop()
+           7.
+             *local 所有计算都运行在一个线程当做，没有任何并行计算
+
+             *local[K]:指定使用几个线程来运行计算，比如local[4]就是运行
+            4个Worker线程。通常我们的cpu有几个核，就指定几个线程
+              最大化利用cpu的计算能力
+
+             *local[*]这种模式直接帮你按照cores来设置线程数了
+
+
 flink总结：
+     1.Flink是一种框架和分布式处理引擎，用于对无界和有界数据
+        流进行有状态计算。Flink被设计在所有常见的集群汇总运行，
+        以内存速度和任意闺蜜来执行计算。
+     2.spark是事件驱动型，事件驱动应用是一类具有状态的应用，
+      它从一个或多个事件流提取数据，并根据到来的事件触发计算、状态更新或其他外部动作。
+      比较典型的就是以kafka为代表的消息队列几乎都是事件驱动型应用。
+      3.SparkStreaming是微批次，而Flink是流处理
+            *批处理的特点是有界、持久、大量，
+                非常适合需要访问全套记录才能完成的计算工作，一般用于离线统计。
+             *流处理的特点是无界、实时,  无需针对整个数据集执行操作，
+               而是对通过系统传输的每个数据项执行操作，一般用于实时统计。
+             * 在spark的世界观中，一切都是由批次组成的，
+                离线数据是一个大批次，而实时数据是由一个一个无限的小批次组成的。
+             *  而在flink的世界观中，一切都是由流组成的，离线数据是有界限的流，
+                实时数据是一个没有界限的流，这就是所谓的有界流和无界流。
+             *无界数据流：无界数据流有一个开始但是没有结束，它们不会在生成时终止并提供数据，
+               必须连续处理无界流，也就是说必须在获取后立即处理event。
+              *有界数据流：有界数据流有明确定义的开始和结束，有界流的处理也称为批处理。
+
+       4.Flink分层api
+         *大多数应用是针对核心API（Core APIs） 进行编程，
+            比如DataStream API（有界或无界流数据）以及DataSet API（有界数据集)
+         *Table API 是以表为中心的声明式编程，其中表可能会动态变化（在表达流数据时）。Table API遵循（扩展的）关系模型：表有二维数据结构（schema）（类似于关系数据库中的表），同时API提供可比较的操作，例如select、project、join、group-by、aggregate等。
+           Table API程序声明式地定义了什么逻辑操作应该执行，
+            而不是准确地确定这些操作代码的看上去如何 。你可以在表与 DataStream/DataSet 之间无缝切换，
+             以允许程序将 Table API 与 DataStream 以及 DataSet 混合使用.
+             Flink提供的最高层级的抽象是 SQL
+         5.支持有状态计算，将算子的中间结果保存在内存或者文件系统中
+
+         6.支持exactly-once语义
+            *At Most once 对于一条message,receiver最多收到一次(0次或1次).
+
+            *At Least once: 对于一条message,receiver最少收到一次(1次及以上).
+
+            *Exactly once: 对于一条message,receiver确保只收到一次
+
+          7.编程
+             导入以下maven包就行
+             <dependencies>
+                     <dependency>
+                         <groupId>org.apache.flink</groupId>
+                         <artifactId>flink-scala_2.11</artifactId>
+                         <version>1.7.0</version>
+                     </dependency>
+
+                     <!-- https://mvnrepository.com/artifact/org.apache.flink/flink-streaming-scala -->
+                     <dependency>
+                         <groupId>org.apache.flink</groupId>
+                         <artifactId>flink-streaming-scala_2.11</artifactId>
+                         <version>1.7.0</version>
+                     </dependency>
+                 </dependencies>
+
+
+                代码：
+                   *批处理
+                    def main(args: Array[String]): Unit = {
+
+                      //构造执行环境
+                      val env: ExecutionEnvironment = ExecutionEnvironment.getExecutionEnvironment
+                      //读取文件
+                      val input = "file:///d:/temp/hello.txt"
+                      val ds: DataSet[String] = env.readTextFile(input)
+                      // 其中flatMap 和Map 中  需要引入隐式转换
+                      import org.apache.flink.api.scala.createTypeInformation
+                      //经过groupby进行分组，sum进行聚合
+                      val aggDs: AggregateDataSet[(String, Int)] = ds.flatMap(_.split(" ")).map((_, 1)).groupBy(0).sum(1)
+                      // 打印
+                      aggDs.print()
+
+                    }
+
+                     *批处理
+                        def main(args: Array[String]): Unit = {
+                            //从外部命令中获取参数
+                            val tool: ParameterTool = ParameterTool.fromArgs(args)
+                            val host: String = tool.get("host")
+                            val port: Int = tool.get("port").toInt
+
+                            //创建流处理环境
+                            val env: StreamExecutionEnvironment = StreamExecutionEnvironment.getExecutionEnvironment
+                            //接收socket文本流
+                            val textDstream: DataStream[String] = env.socketTextStream(host,port)
+                           // flatMap和Map需要引用的隐式转换
+                            import org.apache.flink.api.scala._
+                           //处理 分组并且sum聚合
+                            val dStream: DataStream[(String, Int)] = textDstream.flatMap(_.split(" ")).filter(_.nonEmpty).map((_,1)).keyBy(0).sum(1)
+                           //打印
+                            dStream.print()
+
+                            env.execute()
+                          }
+
+          8.Flink和Spark两个和重要角色区别
+                (spark里：driver 	executor)
+                (Flink里：jobmanager		taskmanager)
+
+          9.Flink有standalone和yarn两种模式
+              * standalone模式(解压后配置jobmanager和taskmanager)
+                    启动方式
+                    ./start-cluster.sh
+                    提交任务
+                    ./flink run -c wc.WordCount2  /home/lisi/FlinkTest-1.0-SNAPSHOT.jar  --input /home/lisi/word.txt --output /home/lisi/flinkoutput/output.csv
+
+              *yarn模式
+              （打开yarn-session，启动时加上启动方式即可,我认为也只是只用配置一台）
+
+
+
+
+
+
+
+
 
