@@ -1,4 +1,4 @@
-package scalatest.边长字符串
+package scalatest.变长字符串
 
 object StringTest {
 

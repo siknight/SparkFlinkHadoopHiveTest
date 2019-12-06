@@ -18,6 +18,12 @@
             <scope>test</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-actors</artifactId>
+            <version>2.11.8</version>
+        </dependency>
+
 
         <dependency>
             <groupId>org.junit.jupiter</groupId>
