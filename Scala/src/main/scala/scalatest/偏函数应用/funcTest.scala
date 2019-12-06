@@ -1,4 +1,4 @@
-package scalatest.偏应用函数
+package scalatest.偏函数应用
 
 import java.util.Date
 

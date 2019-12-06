@@ -13,8 +13,8 @@ import scala.actors.Actor
   */
 
 class MyActor  extends Actor{
-  override def act(): Unit = {
-    receive{   //用于接收客户端发送的消息
+  override def act(): Unit= {
+    receive{   //用于接收客户端发送的消息,这个方法名字不能变
       case s:String=>println(s)
       case _=>println("default")
     }

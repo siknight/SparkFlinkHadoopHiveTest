@@ -46,6 +46,9 @@ duration  [djuˈreɪʃn] 持续时间; 期间
 union 协会;联合会;会社;俱乐部;同盟;联盟;(在spark的rdd算子里用于两个集合的合并)
 subtract  v 减;减去 （在rdd里用于求两个集合的差集）
 intersection 相交，交叉 (在rdd里用于求两个集合的交集)
+---------------
 cartesian  [kɑːˈtiːziən] 笛卡儿积
-
 recursive [rɪˈkɜːsɪv] 递归的; 循环的;
+Partial [ˈpɑːʃl]  偏颇; 偏袒;
+
+

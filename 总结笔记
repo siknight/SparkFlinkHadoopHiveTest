@@ -885,7 +885,84 @@ scala语言总结：
 
              35.元组里没有foreach，要用tuple.productIterator
 
-             36.
+             36./**
+                     * 8.高阶函数
+                     *  1.函数的参数是函数
+                     *  2.函数的返回是函数  --函数的返回是函数时，要显式声明函数的返回类型
+                     *  3.函数的参数和返回都是函数
+                     */
+
+                  /**
+                      * 9.柯里化函数
+                      *  柯里化函数就是高阶函数的简化版
+                      */
+
+            37.样例类实现了apply方法，意味着你不需要使用new关键字就能创建该类对象
+                case class People(name:String,age:Int)
+                val p = People("mobin",22) //省略了new关键字
+
+             38.    偏函数参考https://www.jianshu.com/p/5d3b5881ae13
+               *由于偏函数继承自函数，因而，如果一个方法要求接收函数，那么它也可以接收偏函数。
+               例如我们常常使用的map、filter等方法，就可以接收偏函数：
+                   val sample = 1 to 10
+                   sample map {
+                       case x if x % 2 == 0 => x + " is even"
+                       case x if x % 2 == 1 => x + " is odd"
+                   }
+
+
+                     在Twitter的Effetive Scala中，给出了一个使用map的编码风格建议：
+                     //avoid
+                     list map { item =>
+                       item match {
+                         case Some(x) => x
+                         case None => default
+                       }
+                     }
+                     //recommend
+                     list map {
+                       case Some(x) => x
+                       case None => default
+                     }
+
+
+            从本质上讲，假设这个list的类型为List[Option[String]]，
+            则前者传给map的其实是一个形如Option[String] => String的函数，
+            后者则通过case语句创建了PartialFunction[Option[String], String](A => B)
+             的实例传递给了map。
+
+       *Scala中的Partial Function就是一个“残缺”的函数，就像一个严重偏科的学生，
+           只对某些科目感兴趣，而对没有兴趣的内容弃若蔽履。Partial Function做不到以“偏”概全，
+           因而需要将多个偏函数组合，最终才能达到全面覆盖的目的。
+           所以这个Partial Function确实是一个“部分”的函数。
+       *对比Function和Partial Function，更学术味的解释如下：
+             Function:对给定的输入参数类型，函数可接受该类型的任何值 。
+            换句话说，一个(Int) => String 的函数可以接收任意Int值，并返回一个字符串。
+             Partial Function:对给定的输入参数类型，偏函数只能接受该类型的某些特定的值。
+                一个定义为(Int) => String 的偏函数可能不能接受所有Int值为输入。
+       *在Scala中，所有偏函数的类型皆被定义为PartialFunction[-A, +B]类型，
+       PartialFunction[-A, +B]又派生自Function1。
+       由于它仅仅处理输入参数的部分分支，因而它通过isDefineAt()来判断输入值是否应该由当前偏函数进行处理。
+
+       *既然偏函数仅处理部分分支，自然可以与模式匹配结合起来。
+        case语句从本质上讲就是PartialFunction的子类。当我们定义了如下值：
+                 val p:PartialFunction[Int, String] = { case 1 => "One" }
+        实际上就是创建了一个PartialFunction[Int, String]的子类，其中isDefineAt方法提供类似这样的实现：
+            def isDefineAt(x: Int):Boolean = x == 1
+
+
+            源码
+             object PartialFunction {  //实际可以看出A=》B的一个匿名函数
+
+                      def apply(x: A): B = f1.applyOrElse(x, f2)；
+
+             }
+
+
+
+
+
+
 
 
 
