@@ -1,5 +1,6 @@
 idea常用快捷键总结:
     ctrl+p提示参数快捷键
+    ctrl+h显示子类的实现
     main方法：
         scala：直接写main会提示main方法
         java：写psvm会提示main方法
@@ -855,6 +856,36 @@ scala语言总结：
               25.scala所有的集合和数组输出都可以用 对象名.mkString(",")输出
 
 
+              26.当scala  new class一个对象时，class里除了里面的方法不执行，剩下的都执行
+
+
+              27scala定义在object里的方法和变量都是静态的
+
+              28.object 和 trait不可以传参
+
+
+              29.参数里的_只使用一次时，可以省略,方法里只有一个参数时，调用可以省略
+                如println
+
+              30.定义方法“=”可以省略，省略之后，无论方法体最后一行计算的结果是什么
+                    都会被丢弃，返回Unit
+
+
+             31.
+               *递归函数要指定函数的返回值类型，要显示声明
+               *函数的返回是函数时，要显示声明或者在最后一行用函数名f _
+
+             32.flatMap =map + flatten
+
+
+             33.tuple最多支持22个元素
+
+
+             34.map集合里的元素是2元元组
+
+             35.元组里没有foreach，要用tuple.productIterator
+
+             36.
 
 
 
@@ -870,7 +901,9 @@ scala语言总结：
 
 
 
-spark总结：（不用zookeeper）
+
+
+spark总用zookeeper,但是可以用zookeeper配置高可用）
         概括：一种基于内存的快速，通用，可扩展的大数据分析引擎。
             由scala编写
         1.spark有三种运行模式：local本地运行模式,standalone模式和完全分布式模式
@@ -941,7 +974,217 @@ spark总结：（不用zookeeper）
 
              *local[*]这种模式直接帮你按照cores来设置线程数了
 
+           8.RDD（Resilient Distributed Dataset）叫做分布式数据集，
+                是Spark中最基本的数据抽象。代码中是一个抽象类，
+                它代表一个不可变、可分区、里面的元素可并行计算的集合。
 
+           9.RDD的特点
+                     RDD表示只读的分区的数据集，对RDD进行改动，
+                      只能通过RDD的转换操作，由一个RDD得到一个新的RDD
+                      RDDs之间存在依赖，RDD的执行是按照血缘关系延时计算的。
+                      如果血缘关系较长，可以通过持久化RDD来切断血缘关系。
+           10.RDD的属性
+
+           * Internally, each RDD is characterized by five main properties:
+            *
+            *  - A list of partitions  一组分区（Partition），即数据集的基本组成单位;
+                    （讲不同分区发给不同executor，体现并行运算）
+            *  - A function for computing each split  一个计算每个分区的函数;
+            *  - A list of dependencies on other RDDs  RDD之间的依赖关系（血统）
+            *  - Optionally, a Partitioner
+               for key-value RDDs (e.g. to say that the RDD is hash-partitioned)
+                4)一个Partitioner，即RDD的分片函数;
+            *  - Optionally, a list of preferred locations to compute each split on (e.g. block locations for
+              一个列表，存储存取每个Partition的优先位置（preferred location）（意思是移动数据不如移动计算）
+           11.RDD体现了控制抽象思想，将一段逻辑传进去
+
+           12.算子：从认知心理学角度，解决问题其实是将问题的初始状态，通过
+                一系列的操作（operate）算子对问题的状态进行转换，
+                然后达到完成（解决）状态。
+
+                Spark中所有的RDD方法都称作算子，算子被分为两大类：转换算子和行动算子
+
+
+
+            13.RDD的特点
+                    *分区：RDD逻辑上是分区的，每个分区的数据是抽象存在的，
+                       计算的时候会通过一个compute函数得到每个分区的数据。
+                     *只读：RDD是只读的，要想改变RDD中的数据，只能在现有的RDD基础上创建新的RDD。
+
+                      *依赖：RDDs通过操作算子进行转换，转换得到的新RDD包含了从其他RDDs衍生所必需的信息，
+                           RDDs之间维护着这种血缘关系，也称之为依赖(血统)
+                      *缓存：如果在应用程序中多次使用同一个RDD，可以将该RDD缓存起来，
+                         该RDD只有在第一次计算的时候会根据血缘关系得到分区的数据，
+                       在后续其他地方用到该RDD的时候，会直接从缓存处取而不用再根据血缘关系计算
+                       *CheckPoint：虽然RDD的血缘关系天然地可以实现容错，
+                          当RDD的某个分区数据失败或丢失，可以通过血缘关系重建。
+
+             14RDD的创建
+                在Spark中创建RDD的创建方式可以分为三种：从集合中创建RDD；从外部存储创建RDD；从其他RDD创建。
+                    *从集合中创建RDD，Spark主要提供了两种函数：parallelize和makeRDD
+                         //1.从集合（内存）中创建,makeRdd底层实现就是parallelize,没有任何区别
+                            val rddArray: RDD[Int] = sc.makeRDD(Array(1,2,3,4))  //Array用List也行
+                            rddArray.foreach(print(_))  //没有collect也可以直接输出结果
+
+                          //2.从集合内存中创建
+                            val rddList: RDD[Int] = sc.parallelize(List(1,2,3,4))
+                            rddList.collect().foreach(print(_))   //collect
+                      *从外部存储中创建
+                            //如果是hdfs写hdfs://hadop102:9000/
+                            val lines: RDD[String] = sc.textFile("in/word1")  //读文件一行一行是String类型
+                            lines.collect().foreach(println(_))
+
+         15.spark分区和生成几个文件的说明
+               （1） spark有几个分片（分区）就有几个并行度，也就是给跑的程序几个核数，local[*]是当前
+               （2）机器有几个核数，那么默认就有几个分区。后期也可以在创建RDD时（makeRDD和textFile里设置）
+                        *makeRDD:
+                            第二个参数分片有默认值，就是当前设置的分片数
+
+                        *testFile:
+                            （1）第二个参数分片数有默认值，
+                           （2）读取文件时，传递的分区参数为最小分区数时，
+                          不一定就是这个分区数，取决于hadoop读取文件时
+                          的分片原则
+               （3）本地模式官方并行度默认值（默认并行度=总核心数）
+                 override def defaultParallelism(): Int =
+                    scheduler.conf.getInt("spark.default.parallelism", totalCores)
+               当自己设置的分片数大于电脑总的核心数时，任然可以按照自己设置的核心数运行（3个）
+               val rddArray: RDD[Int] = sc.makeRDD(Array(1,2,3,4),3)
+              （3）总结：分片数=并行度=当前程序设置的核心数=task个数=分区数=输出文件个数
+
+              （4）日志分析
+                    /**
+                      *   MakeRDD（）方法
+                        def makeRDD[T: ClassTag](
+                          seq: Seq[T],
+                           numSlices: Int = defaultParallelism): RDD[T] = withScope { //这里是默认并行度，注意和textFile区别
+                          parallelize(seq, numSlices)
+                         }
+                      *
+                      * local（并行度，核数）为1时
+                          *     Got job 0 (saveAsTextFile at RDD分片.scala:14) with 1 output partitions
+                          *  Adding task set 0.0 with 1 tasks
+                          *    Submitting 1 missing tasks from ResultStage 0 (MapPartitionsRDD[1] at saveAsTextFile
+                          *  Running task 0.0 in stage 0.0 (TID 0)
+                          *   Finished task 0.0 in stage 0.0 (TID 0). 1012 bytes result sent to driver
+                          *  Finished task 0.0 in stage 0.0 (TID 0) in 411 ms on localhost (executor driver) (1/1)
+                          *   Removed TaskSet 0.0, whose tasks have all completed, from pool
+                      *
+                      *
+                      *   分片数（并行度，核数）为3时
+                      *   Got job 0 (saveAsTextFile at RDD分片.scala:26) with 3 output partitions
+                      *      Submitting 3 missing tasks from ResultStage 0 (MapPartitionsRDD[1] at saveAsTextFile at RDD分片
+                      *   Adding task set 0.0 with 3 tasks
+                      *
+                      *      TODO 开启了三个task
+                      *    Starting task 0.0 in stage 0.0 (TID 0, localhost, executor driver, partition 0, PROCESS_LOCAL, 5892 bytes)
+                      *      Finished task 0.0 in stage 0.0 (TID 0). 1012 bytes result sent to driver
+                      *   Starting task 1.0 in stage 0.0 (TID 1, localhost, executor driver, partition 1, PROCESS_LOCAL, 5892 bytes)
+                      *       Finished task 1.0 in stage 0.0 (TID 1). 925 bytes result sent to driver
+                      *  Starting task 2.0 in stage 0.0 (TID 2, localhost, executor driver, partition 2, PROCESS_LOCAL, 5896 bytes)
+                      *     Finished task 2.0 in stage 0.0 (TID 2) in 59 ms on localhost (executor driver)
+                      *
+                      *     以上结果可以知道三个并行度会开启一个job，三个task，三个partition（默认都是从0开始）
+                      *     和hadoop异同。hadoop有多少个分片就有多少个maptask，每一个mapper类就是一个maptask。
+                      *       hadoop的inputformat分片机制取决于文件得个数和每一个文件的大小（0-128M）
+                      *
+                      *   总结：分片数=并行度=当前程序设置的核心数=task个数=分区数=输出文件个数
+                      *
+                      *  textFile（）方法
+                         def textFile(
+                            path: String,
+                            minPartitions: Int = defaultMinPartitions  //这个参数是最小分区数，注意和makeRDD区别
+                         )
+                          : RDD[String] = withScope {
+                          assertNotStopped()
+                          hadoopFile(path, classOf[TextInputFormat], classOf[LongWritable], classOf[Text],
+                            minPartitions).map(pair => pair._2.toString).setName(path)   //这里说明还要取决于hadoopFile的分片机制
+                                                                                        //主要是minPartitions为2时会有区别
+                      }
+
+                      *运行日志：
+                        默认并行度：
+                        def defaultMinPartitions: Int = math.min(defaultParallelism, 2)
+                               defaultParallelism这个就是makeRDD里的默认并行度，但是local[*]设置大于2时，默认取2
+                         override def defaultParallelism(): Int =
+                          scheduler.conf.getInt("spark.default.parallelism", totalCores)
+                      *  一个并行度
+                      *   submitting 1 missing tasks from ResultStage 0 (MapPartitionsRDD[3] at saveAsTextFil
+                      *   Adding task set 0.0 with 1 tasks
+                      *   Starting task 0.0 in stage 0.0 (TID 0, localhost, executor driver, partition 0, PROCESS_LOCAL, 6000 bytes)
+                      *    Finished task 0.0 in stage 0.0 (TID 0). 1245 bytes result sent to driver
+                      *
+                      *  三个并行度(和MakeRDD一样，这里省略)
+                      *    Submitting 3 missing tasks from ResultStage 0 (MapPartitionsRDD[3] at saveAs
+                      *
+                      *
+                      */
+            16.算子
+                 转换算子单value:
+                        *map对每一个集合里的元素操作组成新的集合
+                        *mapPartitions对每一个分区内的集合操作组成新得集合
+                        *mapPartitionsWithIndex对每一个分区内的集合操作组成新得集合
+                            并且附带将分区的下标带过来
+                        *flatmap对每一个集合里的元素的子元素操作形成新的集合
+                        *groupBy根据key进行分组
+                        *filter 过滤操作成为新的集合
+                        *sample对集合里的元素进行抽样成为新的集合
+                             val sampleRdd: RDD[Int] = rdd.sample(true,0.2,2)
+                               参数说明
+                                1)第一个参数withReplacement为true表示有放回，为false表示无放回，
+                                2)fraction表示抽取的数量
+                                3)第三个参数seed可以不传，不传的话是真正的随机数，
+                                   每次产生都不一样,传入后，是伪随机数，
+                                   每次只要参数相同，产生的数据都是一样的
+                        *distinct 对集合相同元素去重，有shuffle过程
+                        *coalesce 减少分区数，默认没有shuffle
+                        *glom将每一个分区形成一个数组，形成新的RDD类型时RDD[Array[T]]
+                        *repartition 在当前rdd上重新分区转换成新的rdd，和coalesce不同的是，
+                            此方法有shuffle过程
+                         *sortBy是按照处理后的数据结果排序，默认为正序，false为倒序，true为正序
+
+                 转换算子双value:
+                   *union 求两个集合的并集，会重复
+                   *subtract 求两个集合的差集
+                   *intersection 求两个集合的交集
+                   *cartesian 笛卡尔积
+
+                 转换算子key-value：
+                    key-value的方法不在rdd类里，value类型的方法都在rdd类里
+
+
+
+
+            17spark是按行读取的
+
+
+            18flatMap解读 对于val list =List(List(T)),list.flatMap(x=>b),x指List，b指
+                对T的操作
+
+
+            19
+                //coalesce(1) 只会输出一个文件，reduce
+                lines.coalesce(1).saveAsTextFile("out/hadoop/lines06")
+
+             20.模式匹配语法中，采用match关键字声明，
+                 每个分支采用case关键字进行声明，如果匹配不成功，
+                 继续执行下一个分支进行判断。如果所有case都匹配，
+                 那么会执行case _ 分支，类似于Java中default语句。
+                  如果没有任何模式匹配成功，那么会抛出MatchError。
+                    每个case中，不用break语句。
+
+             21.只有数据分区好后有打乱顺序才有shuffle，否则没有shuffer
+
+             22.rdd.partitions.size获取当期RDD的分区个数，
+               rdd.partitions获取当前RDD的分区
+
+            23.一个分区划分为一个任务（Task），一个任务会分配到Executor里执行
+
+
+            24.spark里的ui界面，会在启动后日志里面，自己去找，一般端口号是4040
+                    spark-shell启动后的jps也是spark-submit
+
+            25.spark rdd只有遇到行动算子后才会触发操作
 flink总结：
      1.Flink是一种框架和分布式处理引擎，用于对无界和有界数据
         流进行有状态计算。Flink被设计在所有常见的集群汇总运行，

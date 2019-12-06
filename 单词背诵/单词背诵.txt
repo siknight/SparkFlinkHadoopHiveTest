@@ -7,7 +7,6 @@ detache  分离的
 reliable 可靠的
 scalable 可扩展的
 scale up 增大; 增加; 提高;
-detect 发现，查明
 release 公开，发布，释放   n版本
 minor 次要的，较小的，轻微的
 upon 在..之上
@@ -21,14 +20,12 @@ appender 附加器
 effort 努力
 coordination 协作; 协调; 配合;
 stat 统计
-ephemeral 短暂的; 瞬息的;
 pseudo 假的，伪的，冒充的
 pseudo-distributed 伪分布式的
-prerequisite 先决条件
+prerequisite   [ˌpriːˈrekwəzɪt] 先决条件
 prone  遭受
 ------------------
 verbose 	冗长的; 啰唆的; 唠叨的;
-convention  协议,习俗; 常规; 惯例
 access   n.通道，机会  vt 到达，进入
 Counter 计数器，计算器，柜台
 track 小道，轨道，跟踪
@@ -37,6 +34,18 @@ mutable 可变的; 会变的;
 -------------
 Resilient [rɪˈzɪliənt]  有弹性(或弹力)的; 能复原的;
 glom vt 偷；抢；看；瞪 （在spark里将每一个分区形成一个数组，形成新的RDD类型时RDD[Array[T]]）
-distinct  明显的，清楚的；卓越的，不寻常的；有区别的；确切的；
+distinct  明显的，清楚的；卓越的，
+    不寻常的；有区别的；确切的；（在spark表示去重）
 shuffle vt 洗牌 n洗牌
 coalesce 合并; 联合; 结合 （在spark算子里是用来改变分区数，默认没有shuffle过程）
+fraction 小部分，少许
+detect 发现，查明
+ephemeral 短暂的; 瞬息的;
+convention  协议,习俗; 常规; 惯例
+duration  [djuˈreɪʃn] 持续时间; 期间
+union 协会;联合会;会社;俱乐部;同盟;联盟;(在spark的rdd算子里用于两个集合的合并)
+subtract  v 减;减去 （在rdd里用于求两个集合的差集）
+intersection 相交，交叉 (在rdd里用于求两个集合的交集)
+cartesian  [kɑːˈtiːziən] 笛卡儿积
+
+recursive [rɪˈkɜːsɪv] 递归的; 循环的;
