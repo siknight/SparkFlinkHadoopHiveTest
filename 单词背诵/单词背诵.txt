@@ -50,5 +50,9 @@ intersection 相交，交叉 (在rdd里用于求两个集合的交集)
 cartesian  [kɑːˈtiːziən] 笛卡儿积
 recursive [rɪˈkɜːsɪv] 递归的; 循环的;
 Partial [ˈpɑːʃl]  偏颇; 偏袒;
+aggregate   [æɡrɪɡeɪt] 总数; 合计
+Lineage [ˈlɪniɪdʒ] 世系; 宗系; 家系; 血统;
+schema [ˈskiːmə] 提要，纲要;
+
 
 

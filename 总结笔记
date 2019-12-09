@@ -959,6 +959,27 @@ scala语言总结：
              }
 
 
+   39.Option
+    val myMap: Map[String, String] = Map("key1" -> "hehe")
+          //Scala Option(选项)类型用来表示一个值是可选的（有值或无值)。
+          //Option[T] 是一个类型为 T 的可选值的容器：
+          // 如果值存在， Option[T] 就是一个 Some[T] ，
+          // 如果不存在， Option[T] 就是对象 None 。
+          val value01: Option[String] = myMap.get("key1")
+          val value02: Option[String] = myMap.get("key2")
+
+          println(value01)  //输出Some(hehe)
+          println(value02) //输出None
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1229,6 +1250,72 @@ spark总用zookeeper,但是可以用zookeeper配置高可用）
                  转换算子key-value：
                     key-value的方法不在rdd类里，value类型的方法都在rdd类里
 
+                  *partitionBy 通过分区器分区
+                  *groupByKey 通过key分区，对每个key进行操作，但只生成一个sequence
+                  *reduceBykey 通过key聚合
+                    groupBykey和reduceBykey区别：
+                       ---- reduceByKey：按照key进行聚合，
+                          在shuffle之前有combine（预聚合）操作
+                       --- groupByKey：按照key进行分组，直接进行shuffle。
+                       -----开发指导：reduceByKey比groupByKey快，建议使用。
+                          但是需要注意是否会影响业务逻辑。
+
+                   *sortBykey  排序
+                   *aggregateByKey(zeroValue: U)(seqOp: (U, V) => U,combOp: (U, U) => U)
+                       （1）zeroValue：给每一个分区中的每一个key一个初始值；
+                           （初始值）
+                       （2）seqOp：函数用于在每一个分区中用初始值逐步迭代value；（序列运算）
+                       （3）combOp：函数用于合并每个分区中的结果。
+                               **
+                                   自己总结
+                                 * aggregateByKey
+                                 * 1，按key先给一个初始值
+                                 * 2.按key对分区内数据计算
+                                 * 3.按key对分区内计算的数据再进行分区外计算
+                                 */
+
+                    *foldByKey 用法和aggregateByKey相似
+                             zeroValue：给每一个分区中的每一个key一个初始值；
+                             combop：定义分区内和分区外的计算规则
+
+
+                    * combineByKey[C]
+                      createCombiner:创建value的组合形式
+                      mergeValue:  分区内合并规则
+                      mergeCombiners：分区外合并规则
+
+
+                    * join(otherDataset, [numTasks])
+                       在类型为(K,V)和(K,W)的RDD上调用，
+                       返回一个相同key对应的所有元素对在一起的(K,(V,W))的RDD
+
+                    *cogroup(otherDataset, [numTasks]) 案例（研究）
+                        在类型为(K,V)和(K,W)的RDD上调用，
+                        返回一个(K,(Iterable<V>,Iterable<W>))类型的RDD
+
+
+
+
+
+                行动算子：
+                   *reduce 聚合
+                   *collect 将RDD转换为Array
+                   *count 计算RDD元素内数量
+                   *first  取RDD的第一个元素
+                   *take  取RDD前几个元素
+                   *takeOrdered 取RDD前几个元素并排序
+                   *saveAsTextFile  文本文件
+                    saveAsSequenceFile  序列化文件
+                    saveAsObjectFile 对象文件
+                   *countByKey 计算每种key的数量
+                   *foreach 循环
+
+
+             17.RDD依赖关系
+                  *血统（Lineage）
+                    RDD记录执行的单个操作，
+
+
 
 
 
@@ -1262,6 +1349,58 @@ spark总用zookeeper,但是可以用zookeeper配置高可用）
                     spark-shell启动后的jps也是spark-submit
 
             25.spark rdd只有遇到行动算子后才会触发操作
+
+            26.A用到了B，就是A依赖于B A----->{}
+
+            27.RDD和它依赖的父RDD（s）的关系有两种不同的类型
+            ，即窄依赖（narrow dependency）和宽依赖（wide dependency）
+              （shuffle就是宽依赖）。
+
+            28
+               窄依赖：指父依赖的一个partition最多被子依赖的一个
+            partition使用。窄依赖我们形象比喻为独生子女
+               宽依赖：指父依赖的一个partition被多个子RDD的partition
+                  依赖，会引起shuffle。宽依赖我们形象的比喻为超生。
+
+            29.RDD任务划分
+             RDD任务切为Application、Job、Stage和Task四个阶段
+               *初始化一个SparkContext生成一个Application
+               *一个Action算子是一个job
+               *每个job可以分为好几个阶段
+                 本身是一个阶段，每遇到一个shuffle增加一个阶段
+                 所以阶段数=1+shuffle次数
+               *每个阶段生成多少个分区，就有多少个task
+                所有阶段的task加起来就是总的task
+
+           30.RDD数据分区器
+                *Spark目前支持Hash分区和Range分区，用户也可以自定义分区
+                ，Hash分区为当前默认分区
+                *Saprk中分区器直接决定了RDD中分区的个数
+                *RDD中每条数据经过shuffle过程决定属于哪个分区
+                    和Reduce的个数
+            注意点：
+                *只有key-value类型的RDD才有分区器，非key-value类型
+                的RDD分区器的值是None
+                *每个RDD的分区id是0-numPartitions-1，决定这个值是是属于
+                   哪个分区
+
+
+           31.spark sql 就是将数据读过来后（不一定是从数据库读），用sql语句处理这些数据
+
+
+           32.spark sql 如果想用sql语句必须要创建表，然后用val userSql = spark.sql("******表***")操作
+              最后用userSql.show显示数据
+
+           33.
+               *Spark sql是spark用来处理结构化数据(RDD没有结构)的
+             一个模块，它提供了两种编程抽象（底层都是RDD）：
+             DataFrame和DataSet，并且作为分布式sql查询引擎作用。
+                *DataFrame：与RDD类似，DataFrame也是一个分布式数据容器，
+                    DataFrame更像传统数据库的二维表格。除了数据以外，还记录
+                    数据的结构信息，即shema
+
+
+
 flink总结：
      1.Flink是一种框架和分布式处理引擎，用于对无界和有界数据
         流进行有状态计算。Flink被设计在所有常见的集群汇总运行，

@@ -1,4 +1,4 @@
-package sparkContext.RDD
+package sparkContext.RDD.创造RDD三种方式
 
 import org.apache.spark.rdd.RDD
 import org.apache.spark.{SparkConf, SparkContext}
