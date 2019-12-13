@@ -1,4 +1,4 @@
-package 汽车
+package 汽车.原始数据生成
 
 object Test {
 

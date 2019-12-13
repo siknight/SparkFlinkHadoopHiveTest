@@ -1,6 +1,4 @@
-package 汽车
-
-import java.util.Random
+package 汽车.原始数据生成
 
 /**
   * 初始数据：
