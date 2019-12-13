@@ -17,10 +17,11 @@ object Util {
   /**
     *   用处：随机返回一个月
     * @param size 多少个月份，比如：如果为一年就填参数12，6个月就填6
+    *  @param   step 为1 表示选1-12月 为2表示选2-12月 依次类推
     * @return  随机返回哪个月
     */
-  def  monthRandom(size:Int):Int ={
-    (Math.random()*size+1).toInt
+  def  monthRandom(size:Int,step:Int):Int ={
+    (Math.random()*size+step).toInt
   }
 
   /**
@@ -33,12 +34,15 @@ object Util {
   }
 
   /**
-    * 循环次数
-    * @param number
+    * 随机选择哪个车递增或者递减
     */
-  def forNumber(number:Int): Unit ={
 
+  def selectOneCar ={
+    val oneCar: (String, Int) = listResultData(Initdata.cars).asInstanceOf[(String,Int)]
+    val onecarName: String = oneCar._1
+    onecarName
   }
+
 
 
 }

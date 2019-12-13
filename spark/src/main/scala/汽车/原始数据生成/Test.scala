@@ -6,10 +6,10 @@ object Test {
 
 
 
-    //下单性别
-    for (i <- 1 to 20){
-      println(Util.listResultData(Initdata.sex))
-    }
+   val str01="hehhe";
+    val str02="hehhe"
+    println(str01==str02)
+
   }
 
 }
