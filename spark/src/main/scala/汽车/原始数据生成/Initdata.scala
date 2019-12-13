@@ -9,8 +9,19 @@ package 汽车.原始数据生成
 
 
 object Initdata {
-
-
+  //月数
+  val month1to12 = List(1,2,3,4,5,6,7,8,9,10,11,12)
+  val month2to12 = List(2,3,4,5,6,7,8,9,10,11,12)
+  val month3to12 = List(3,4,5,6,7,8,9,10,11,12)
+  val month4to12 = List(4,5,6,7,8,9,10,11,12)
+  val month5to12 = List(5,6,7,8,9,10,11,12)
+  val month6to12 = List(6,7,8,9,10,11,12)
+  val month7to12 = List(7,8,9,10,11,12)
+  val month8to12 = List(8,9,10,11,12)
+  val month9to12 = List(9,10,11,12)
+  val month10to12 = List(10,11,12)
+  val month11to12 = List(11,12)
+  val month12 = List(12)
   //下单性别
   val sex: List[String] = List("男","女")
 

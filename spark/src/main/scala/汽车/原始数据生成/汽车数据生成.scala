@@ -7,7 +7,7 @@ import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.{Dataset, SparkSession}
 import org.apache.spark.{SparkConf, SparkContext}
 
-
+//`Math.random() `取0-1之间的...  0-11之间就是 Math.random()*12  0-12之间就是1-12
 
 //数据格式（中间用空格隔开）： id  下单月份 性别  购买地点 车型 价格 颜色
 object 汽车数据生成 {
@@ -16,9 +16,7 @@ object 汽车数据生成 {
   //scala每次产生一个新的集合
   def main(args: Array[String]): Unit = {
 
-
     dataCreate(1 to 500000,"out/carsSources")
-
 
   }
 
@@ -52,10 +50,6 @@ object 汽车数据生成 {
       //随机生成1-12个月份
       var month: Int = Util.monthRandom(12,1)
 
-
-
-
-
       //随机生成性别：男，女
       val sex: String = Util.listResultData(Initdata.sex).asInstanceOf[String]
 
@@ -74,67 +68,69 @@ object 汽车数据生成 {
         month match {
           case 1 =>{
             if(i > rangesize*89.5/100){  //取消1月份汽车生成
-              month=Util.monthRandom(12,2)
+
+              month= Util.listResultData(Initdata.month2to12).asInstanceOf[Int]
               println("dizeng取消了1月生成")
             }
           }
           case  2=> {
             if(i > rangesize*89.8/100){  //取消2月份汽车生成
-              month=Util.monthRandom(12,3)
+              month= Util.listResultData(Initdata.month3to12).asInstanceOf[Int]
               println("dizeng取消了2月生成")
             }
           }
           case 3 =>{
             if(i > rangesize*90/100){  //取消3月份汽车生成
-              month=Util.monthRandom(12,4)
+              month= Util.listResultData(Initdata.month4to12).asInstanceOf[Int]
               println("dizeng取消了3月生成")
             }
           }
           case  4=> {
             if(i > rangesize*90.5/100){  //取消4月份汽车生成
-              month=Util.monthRandom(12,5)
+              month= Util.listResultData(Initdata.month5to12).asInstanceOf[Int]
               println("dizeng取消了4月生成")
             }
           }
           case 5 =>{
             if(i > rangesize*91/100){  //取消5月份汽车生成
-              month=Util.monthRandom(12,6)
+              month= Util.listResultData(Initdata.month6to12).asInstanceOf[Int]
               println("dizeng取消了5月生成")
             }
           }
           case  6=> {
             if(i > rangesize*91.8/100){  //取消6月份汽车生成
-              month=Util.monthRandom(12,7)
+              month= Util.listResultData(Initdata.month7to12).asInstanceOf[Int]
               println("dizeng取消了6月生成")
             }
           }
           case 7 =>{
             if(i > rangesize*92.9/100){  //取消7月份汽车生成
-              month=Util.monthRandom(12,8)
+              month= Util.listResultData(Initdata.month8to12).asInstanceOf[Int]
               println("dizeng取消了7月生成")
             }
           }
           case  8=> {
             if(i > rangesize*93.5/100){  //取消8月份汽车生成
-              month=Util.monthRandom(12,9)
+              month= Util.listResultData(Initdata.month9to12).asInstanceOf[Int]
               println("dizeng取消了8月生成")
             }
           }
           case 9 =>{
             if(i > rangesize*94.5/100){  //取消9月份汽车生成
-              month=Util.monthRandom(12,10)
+              month= Util.listResultData(Initdata.month10to12).asInstanceOf[Int]
               println("dizeng取消了9月生成")
             }
           }
           case  10=> {
             if(i > rangesize*96/100){  //取消10月份汽车生成
-              month = Util.monthRandom(12,11)
+              month= Util.listResultData(Initdata.month11to12).asInstanceOf[Int]
               println("dizeng取消了10月生成")
             }
           }
+
           case  11=> {
             if(i > rangesize*98.3/100){  //取消11月份汽车生成
-              month = Util.monthRandom(12,12)
+              month= Util.listResultData(Initdata.month12).asInstanceOf[Int]
               println("dizeng取消了11月生成")
             }
           }
