@@ -6,7 +6,7 @@ import java.util
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.{Dataset, SparkSession}
 import org.apache.spark.{SparkConf, SparkContext}
-import scala.util.control.Breaks.break
+
 
 
 //数据格式（中间用空格隔开）： id  下单月份 性别  购买地点 车型 价格 颜色
@@ -17,7 +17,7 @@ object 汽车数据生成 {
   def main(args: Array[String]): Unit = {
 
 
-    dataCreate(1 to 110,"out/carsSources")
+    dataCreate(1 to 500000,"out/carsSources")
 
 
   }
@@ -261,10 +261,7 @@ object 汽车数据生成 {
   }
 
 
-  def dizengCar(carStyle:String,dizengCar:String,rangesize:Int,i:Int,month:Int): Unit ={
 
-
-  }
 
 }
 //id 下单月份 性别  购买地点 车型 价格 颜色
