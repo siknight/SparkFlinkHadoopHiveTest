@@ -1,4 +1,4 @@
-package sparkContext.案例.RDD广告分析案例.省份广告案例
+package sparkContext.SPARK_RDD.转换算子.省份广告案例
 
 import org.apache.spark.rdd.RDD
 import org.apache.spark.{SparkConf, SparkContext}
@@ -11,6 +11,7 @@ object 广告Test {
     * 1516609143867 6 7 64 16
     * 1516609143869 9 4 75 18
     * 1516609143869 1 7 87 12
+    *
     *
     * 需求统计出每一个省份广告被点击次数的TOP3
     *
@@ -50,8 +51,8 @@ object 广告Test {
    //result
 
     val result: RDD[(String, List[(String, Int)])] = provinceGro.mapValues(t => t.toList.sortWith {
-        case ((x, y), (x2, y2)) => y > y2
-      }.take(3)
+      case ((x, y), (x2, y2)) => y > y2
+    }.take(3)
     )
 
     result.foreach{
@@ -64,37 +65,6 @@ object 广告Test {
         }
       }
     }
-
-
-    println("*****************第二种处理方式******************")
-    val result02: RDD[(String, List[(String, Int)])] = provinceGro.map {
-      case (x, y:Iterable[(String, Int)])=> {
-        val listvalue: List[(String, Int)] = y.toList.sortWith {
-          case ((k1, v1), (k2, v2)) => v1 > v2
-        }.take(3)
-        (x,listvalue)
-
-      }
-
-    }
-
-
-
-//    println(result02.collect().mkString("\n"))
-//
-    result02.foreach{
-      case (x,y: List[(String, Int)])=>{
-        println(x+"省:")
-        y.foreach{
-          case (aid,count)=>{
-            println("aid="+aid+",count="+count)
-          }
-        }
-      }
-    }
-
-
-
 
 
 

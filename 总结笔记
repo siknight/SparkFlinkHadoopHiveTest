@@ -1398,6 +1398,40 @@ spark总用zookeeper,但是可以用zookeeper配置高可用）
                 *DataFrame：与RDD类似，DataFrame也是一个分布式数据容器，
                     DataFrame更像传统数据库的二维表格。除了数据以外，还记录
                     数据的结构信息，即shema
+                *与Hive类似，DataFrame也支持嵌套数据类型（struct、array和map）
+                *DataFrame是为数据提供了Schema的视图
+
+           34.DataSet：把数据当做一个对象来用，类似于hibernate
+
+
+           35.df和ds命令不用记，用df. 和 ds.会提示命令
+
+
+           36.rdd,dataframe,dataset互转
+
+             rdd和dataframe互转
+                    方式一：rdd.toDF("name","age")
+                    方式二：
+                      case class person(name:String,age:Int)
+                      rdd.map(return person).toDF
+                  *dataFrame转rdd
+                    df.rdd
+
+             ds和rdd互转
+                  *将DataSet转为RDD
+                        ds.rdd
+                   *rdd转为dataset
+                        rdd.map(return person).tods
+
+              df和ds互转
+                   *dataFrame转化为dataSet
+                     case class Person(name: String, age: Long)
+                      df.as[Person]
+                   *将DataSet转化为DataFrame
+                     ds.toDF
+
+
+
 
 
 

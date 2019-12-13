@@ -22,6 +22,9 @@ object FileTest {
     //map集合通过map（）方法后还是map集合
     val stringToInt: Map[String, Int] = mapGroup.map(t=>(t._1,t._2.size))
 
+
+    Source.
+
   }
 
 }
