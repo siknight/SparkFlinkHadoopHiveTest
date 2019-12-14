@@ -1,5 +1,6 @@
 package 汽车.大数据处理
 
+import java.util
 import java.util.Properties
 
 import org.apache.spark.rdd.RDD
@@ -111,32 +112,43 @@ object CarSales {
 
         val strBuilder: StringBuilder = new StringBuilder()
         //k:月 v:k月对应的销量
+
+        //用于存储每月销量
+
         for((k, v) <- everyMonthAmount) {
           println("月=" + k + ",v=" + v) // 用于比对，是否排序正确
           strBuilder.append(s"$k:$v"+",")
         }
+
+
           //每个车一年的销量组成一个字符串
         val strResult: String = strBuilder.toString()
+
         (carKey, strResult)
 
       } //1
     }
 
-    //改变结构
-    var id=0
-    val listId: List[(Int, String, String)] = resultRDD.collect().toList.map(t => {
-      id = id + 1;
-      (id, t._1, t._2)
-    })
+    //改变结构，加上id
+//    var id=0
+//    val listId: List[(Int, String, String)] = resultRDD.collect().toList.map(t => {
+//      id = id + 1;
+//      (id, t._1, t._2)
+//    })
 //    println("*************************************")
 //    println(listId.mkString(","))
-
-
-      val resultIdRDD: RDD[(Int, String, String)] = sc.makeRDD(listId)
-
+//      val resultIdRDD: RDD[(String, String)] = sc.makeRDD(resultRDD)
+    //排序
+    val resultRDD2=resultRDD.coalesce(1).map{
+      case (s1,s2)=>{
+        val sortStr: String = StrSort.sort(s2)
+        (s1,sortStr)
+      }
+    }
     //将处理完数据导入到mysql数据库
     import spark.implicits._
-    val df: DataFrame = resultIdRDD.toDF("id","carName","perMonthAmonunt")
+//    val df: DataFrame = resultRDD.toDF("id","carName","perMonthAmonunt")
+      val df: DataFrame = resultRDD2.toDF("carName","perMonthAmonunt")
     val connectionProperties  = new Properties()
     connectionProperties.setProperty("user",mysqlUsername)
     connectionProperties.setProperty("password",MysqlPassword)
@@ -148,5 +160,5 @@ object CarSales {
   }
 }
 
-//case class CarsSale(id:Int,carName:String,perMonthAmonunt:String)
+
 

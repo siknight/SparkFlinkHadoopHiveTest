@@ -24,16 +24,24 @@ object Initdata {
   val month12 = List(12)
   //下单性别
   val sex: List[String] = List("男","女")
+  val sex_woman: List[String] = List("男")
 
   //购买地点
   val buyAddress: List[String] = List("上海","天津","北京","杭州","深圳","广州")
+  val buyAddress_tianjin: List[String] = List("上海","北京","杭州","深圳","广州")
+  val buyAddress_hangzhou: List[String] = List("上海","北京","深圳","广州")
+  val buyAddress_shenZhen: List[String] = List("上海","北京")
+
 
   //随机生成，(车型，价格区间)，因为车型和价格关联性很大，所以用元组表示
   //      val cars: List[String] = List("奥迪Q2L","宝马X1","奥迪A6L","宝马3系","奔驰EQC","大众朗逸")
   val cars: List[(String, Int)] = List(("奥迪Q2L",65),("宝马X1",95),("奥迪A6L",87),("宝马3系",96),("奔驰EQC",150),("大众朗逸",23))
 
   //颜色
-  val colors: List[String] = List("红色","黑色","蓝色","灰色")
+  val colors: List[String] = List("红色","黑色","白色","灰色","蓝色")
+  val colors_red: List[String] = List("黑色","白色","灰色","蓝色")
+  val colors_blue: List[String] = List("黑色","白色","灰色")
+  val colors_white: List[String] = List("黑色","灰色")
 
 
 }
