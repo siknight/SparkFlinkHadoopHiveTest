@@ -14,8 +14,8 @@ object 汽车数据生成 {
 
 
   def main(args: Array[String]): Unit = {
-    //(下标范围，保存路径)
-    DataSourceCreate.dataCreate(1 to 100000,"out/carsSources")
+    //(下标范围，保存路径)  hdfs://hadoop102:/out/carsSources
+    DataSourceCreate.dataCreate(1 to 500000,"out/carsSources")
 
   }
 

@@ -1,6 +1,6 @@
-package mapreduce.beanwriteble;
+package mapreduce.排序.区内排序;
 
-import org.apache.hadoop.io.Writable;
+import org.apache.hadoop.io.WritableComparable;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -9,7 +9,7 @@ import java.io.IOException;
 /**
  * 自定义流量类，实现序列化
  */
-public class FlowBean  implements Writable {
+public class FlowBean implements WritableComparable<FlowBean> {
     //手机号
     private long phone;
     //上行流量
@@ -22,7 +22,7 @@ public class FlowBean  implements Writable {
     public FlowBean() {
     }
     //有参构造
-    public FlowBean(long phone,long upFlow, long downFlow) {
+    public FlowBean(long phone, long upFlow, long downFlow) {
         this.phone = phone;
         this.upFlow = upFlow;
         this.downFlow = downFlow;
@@ -117,6 +117,22 @@ public class FlowBean  implements Writable {
      */
     @Override
     public String toString() {
+
         return phone+"  "+upFlow + "   " + downFlow + "   " + sumFlow;
+    }
+
+    /**
+     * 用于排序
+     * @param o
+     * @return
+     */
+//    @Override
+//    public int compareTo(FlowBean o) {
+//        return Long.compare(o.sumFlow, this.sumFlow);
+//    }
+    @Override
+    public int compareTo(FlowBean o) {
+        return Long.compare(o.sumFlow, this.sumFlow);
+
     }
 }

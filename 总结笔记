@@ -1,6 +1,9 @@
+linux常见快捷键：
+    alt+p 打开sftp
 idea常用快捷键总结:
     ctrl+p提示参数快捷键
     ctrl+h显示子类的实现
+    ctrl+o 重写方法
     main方法：
         scala：直接写main会提示main方法
         java：写psvm会提示main方法
@@ -68,21 +71,28 @@ hadoop总结:（不用配zookeeper，除了HA）
          （1）2.0后yarn只负责资源的调度，MapReduce只负责运算。
                 1.0时代MapReduce同时负责资源调度和业务处理，耦合性较大
           （2）yarn包括以下四部分：
-               一，ResourceManager：（资源的分配，相当于盖房子的大包头，监控用户，小包头和手下的监工和分活的）
+               一，ResourceManager：（资源的分配，相当于盖房子的大包头，监控用户，小包头和手下的监工和分活的
+
+               ）
                     01.处理客户端请求
                     02.监控NodeManager
                     03.启动和监控ApplicationMaster
                     04.负责资源的分配和调度（问datanode是否有空）
-                二，NodeManager（和单个节点资源管理有关，相当于公司各个小包头）
+                二，NodeManager（和单个节点资源管理有关，相当于公司各个小包头
+                  ）
                     01.管理单个节点上的资源
                     02.处理来自ResourceManager上的命令
                     03.处理来自ApplicationMaster上的命令
-                 三，ApplicationMaster（和任务运行有关，相当于大包头拍下来监工和应用分工的（给datanode分配资源））
-                      01.负责数据的切分
+                 三，ApplicationMaster（负责任务的调度，和任务运行有关，相当于大包头拍下来监工和应用分工的（给datanode分配资源）,
+                              ）
+                      01.负责数据的切
                       02.任务的监控和容错
                       03.为应用程序请求资源并给内部处理
                       03.任务的监控与容错
-                  四，Container（单个节点资源抽象，相当于一个每个小包头的工作资源，如人力，干活工具）
+                  四，Container（单个节点资源抽象，相当于一个每个小包头的工作资源，如人力，干活工具
+                        、每个NodeManager可以有多个Container。假设NodeManager有
+                        八个核，最多可以启八个container
+                  ）
                      （1）Container是yarn上资源的抽象
                      （2）它封装了某个节点多维度资源，
                             如内存，CPU,硬度，网络等。
@@ -92,9 +102,57 @@ hadoop总结:（不用配zookeeper，除了HA）
                   问他们是否可以运行这个job，如果可以，ResourceManager就让applicationMaster给NodeManager分配
                     任务，然后NodeManager拿到分配任务后，就利用手上的container资源干活。
                     同时Container干活受到ApplicationMaster的监控。
+              五。hadoop和spark最大区别：hadoop是基于硬盘的（缺点：慢），spark是基于内存的（缺点，安全性低，数据容易丢）
 
 
-zookeeper总结：
+
+
+       5.HDFS
+         一，hdfs只支持一次写入，多次读出，且不支持文件得修改，但是可以追加，
+            同一时刻只有一个写入者。
+         二，hdfs的高容错性是指数据自动保存多个副本，它通过增加副本的形式
+                提高容错性，某一副本丢失以后，他可以自动恢复
+        三，不支持并发写入
+        四，hdfs不适合低延迟数据访问，无法高效的对大量小文件进行存储。存储大量小文件
+               会占用NameNode大量的内存来存储文件目录和块信息。这样是不可取的，因为NameNode的内存
+               总是有限的。
+         五.hdfs客户端负责数据的切分，将文件且分为一个一个的block，
+         然后进行上传
+         六.hdfs的块大小为什么设置为128M，假设一个block的寻址时间为10ms，读取block的时间大概为寻址时间的
+            1/100,那么总时间就为10ms*100=1s.一般硬盘的传输速率普遍为100M/s，
+            因为要是2的n次幂，所以设置为12M，相当于1s读取一个块。
+
+         七。hdfs网络拓扑，两个节点之间的距离是他们离共同祖先的距离的总和
+         八.nameNode的元数据并不是立即存在磁盘上，而是先在edit上存操作，
+            当过一定时间或者edit达到一定量后，secondaryDataNode就会把edit和
+            fsimage拷贝过去，进行合并，生成fsimgage.checkpoint,然后发给nameNode
+            ，nameNode将fsimgage.checkpoint重命名为fsimage
+          九。
+             *Fsimage是hdfs系统元数据的一个永久性检查点，其中包含hdfs
+            系统的所有目录和文件node的序列化信息
+             *文件系统客户端的所有写操作会被记录到edit中
+             *seen_txid文件保存的是最后一个edit_的数字
+             *每次NameNode启动的时候都会讲将FsImage文件加载到内存，加载edits
+             的更新操作，保证内存中的元数据永远是最新的，同步的。可以看成namenode
+             启动的时候将edits和fsimage进行了合并
+          十。datanode上不止存内容数据（没有.meta），还存元数据（.meta结尾）
+          十一。namenode会存最新的fsimage和倒数第二新的fsimage，
+            十二。namenode中edits所有的都会保存， 有份edits_inprogress会保存正在写的数据
+            因为数据没有100万条，你会发现namenode的edits是每隔一个小时保存一条
+
+    6.mapreduce
+           一。一般有多少个reducetask，就会有多少个文件生成，一般reducetask个数设置
+            和reducetask分区数相同
+           二。一个mapreduce只有一个map阶段和一个reduce阶段
+           三。MapReduce一共有三类进程。MrAppMaster,MapTask,ReduceTask
+              用户编写的程序分为三个部分：Mapper，Reducer，Driver
+           四。一个切片只对应一个maptask，一个maptask只对应一个recordReader，
+            五.inputformat 有两个作用：1.切片 2.将切片数据变成kv值
+
+
+
+
+zookeeper总结：用于协调各种框架
     1.zookeeper是分布式服务管理框架
                  zookeeper = 文件存储+通知机制。
     2.通过zkServer.sh start 进入服务器端，如果是完全分布式那么三个节点都要打开此命令
@@ -110,6 +168,15 @@ zookeeper总结：
 hive总结：
 
 hbase总结
+
+
+kafka总结（重点，用scala写的）：
+    1.特别注意spark调用kafka（面试经常问）
+
+
+ElasticSearch（es）：
+    1.Elasticsearch是一个基于Apache Lucene(TM)的开源搜索引擎
+    2.Elasticsearch 仅支持json文件格式
 
 
 scala语言总结：

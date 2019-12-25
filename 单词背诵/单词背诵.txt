@@ -53,6 +53,9 @@ Partial [ˈpɑːʃl]  偏颇; 偏袒;
 aggregate   [æɡrɪɡeɪt] 总数; 合计
 Lineage [ˈlɪniɪdʒ] 世系; 宗系; 家系; 血统;
 schema [ˈskiːmə] 提要，纲要;
+----------------------
+elastic	 [ɪˈlæstɪk] 有弹性的，灵活的
+
 
 
 

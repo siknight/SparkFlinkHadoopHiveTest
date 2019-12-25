@@ -1,4 +1,4 @@
-package mapreduce.beanwriteble;
+package mapreduce.手机流量和分区;
 
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;

@@ -12,6 +12,21 @@ import java.io.IOException;
  */
 
 public class WordCountMappper  extends Mapper<LongWritable,Text,Text,LongWritable> {
+
+    @Override
+    protected void setup(Context context) throws IOException, InterruptedException {
+
+        super.setup(context);
+        System.out.println("开始");
+    }
+
+    @Override
+    protected void cleanup(Context context) throws IOException, InterruptedException {
+
+        super.cleanup(context);
+        System.out.println("结束");
+    }
+
     /**
      * map()方法（maptask进程）对每一个<K,V>调用一次
      */
