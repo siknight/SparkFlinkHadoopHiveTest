@@ -26,7 +26,7 @@ public class OrderDriver {
        job.setOutputValueClass(NullWritable.class);
 
         FileInputFormat.setInputPaths(job,new Path("in/order"));
-       FileOutputFormat.setOutputPath(job,new Path("out/hadoop/order/29"));
+       FileOutputFormat.setOutputPath(job,new Path("out/hadoop/order/33"));
 
         boolean b = job.waitForCompletion(true);
         System.exit(b?0:1);

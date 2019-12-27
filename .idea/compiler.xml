@@ -8,6 +8,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="Flink" />
         <module name="hadoop" />
+        <module name="hive" />
         <module name="scala" />
         <module name="spark" />
         <module name="zookeeper" />

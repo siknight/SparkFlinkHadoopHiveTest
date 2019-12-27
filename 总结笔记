@@ -166,6 +166,7 @@ zookeeper总结：用于协调各种框架
 
 
 hive总结：
+   1.hive是分析框架，底层是mapreduce，不是存储框架
 
 hbase总结
 
