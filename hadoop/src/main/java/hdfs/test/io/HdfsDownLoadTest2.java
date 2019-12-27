@@ -28,7 +28,7 @@ public class HdfsDownLoadTest2 {
             fos.write(buf);
         }
 
-//        IOUtils.copyBytes(fdis,fos,configuration);
+//        IOUtils.copyBytes(fdis,fos,configuration); //
         fos.close();
         fdis.close();
         fs.close();
